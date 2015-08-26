@@ -48,11 +48,9 @@ end
 for i = 1:nfolders
     % Prelim
     foldername = fullfile(directorystr, FileList(i).name);
-<<<<<<< HEAD
+
     disp(['Currently reading: ' foldername]);
-=======
-    
->>>>>>> origin/master
+
     % Extract node set data
     for j = 1:num_nset
         data = csvread(fullfile(foldername,strcat('Nodes_',names_nset{j},'.csv')), 0,2)';
@@ -128,13 +126,10 @@ end
 clearvars -except directorystr NDAT SDAT nprofile ncase;
 
 % Saving data structures to directory
-<<<<<<< HEAD
+
 disp('Saving data....');
 save(fullfile(directorystr,'zPROCESSED_DATA.mat'),'-v7.3'),
 disp('Processing data complete');
 toc
-=======
-save(fullfile(directorystr,'PROCESSED_DATA.mat'),'-v7.3'),
 
->>>>>>> origin/master
 end
