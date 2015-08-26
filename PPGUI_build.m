@@ -1538,44 +1538,36 @@ fig_hdl = handles.figure1;
         
         % RS 1
         if get(handles.rsdata1,'Value')
-<<<<<<< HEAD
+
             plot_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI);
-=======
-            plot_responseSpectrum3(NDAT, E, unitstr, convf, eqname,'Surface Response Spectrum', 1, nprofile, ncase, rs_bool);
->>>>>>> origin/master
+
         end
         
         
         % RS 2
         if get(handles.rsdata2,'Value')
-<<<<<<< HEAD
+
             plot_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI);
-=======
-            plot_responseSpectrum3(NDAT, E, unitstr, convf, eqname,'Bedrock (Infield) Response Spectrum', 2, nprofile, ncase, rs_bool);
->>>>>>> origin/master
+
         end
         
         
         % RS 3
         if get(handles.rsdata3,'Value') % TEMP - No outcrop yet
-<<<<<<< HEAD
+
             if isfield(NDAT{1,1},'outx')
                 plot_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI);
             else
                 warning('myfun:fdne','Skipping bedrock (outcrop) response spectrum because do not have outcrop information');
             end
-=======
-            plot_responseSpectrum3(NDAT, E, unitstr, convf, eqname,'Bedrock (Infield) Response Spectrum', 3, nprofile, ncase, rs_bool);
->>>>>>> origin/master
+
         end
         
         % RS 4
         if get(handles.rsdata4,'Value')
-<<<<<<< HEAD
+
             plot_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI);
-=======
-            plot_responseSpectrum3(NDAT, E, unitstr, convf, eqname,'Spectral Amplification', 4, nprofile, ncase, rs_bool);
->>>>>>> origin/master
+
         end
         
         
@@ -1591,7 +1583,6 @@ fig_hdl = handles.figure1;
         
         % PP 1
         if get(handles.ppdata1, 'Value')
-<<<<<<< HEAD
             plot_peakProfile(SDAT, 'epsyz', 'epszx', eqname, 'Max Shear Strain', 5, convf, unitstr, nprofile, ncase)
         end
         
@@ -1603,9 +1594,7 @@ fig_hdl = handles.figure1;
         % PP 4
         if get(handles.ppdata4, 'Value')
             plot_peakProfile(SDAT, 'erateyz', 'eratezx', eqname, 'Max Shear Strain Rate', 1, 1, {'1/s'}, nprofile, ncase)
-=======
-            plot_peakProfile3(SDAT, 'epsyz', 'epszx', eqname, 'Max Shear Strain', 5, convf, unitstr, nprofile, ncase, pp_bool)
->>>>>>> origin/master
+
         end
         
         disp('Generation of figures complete');
