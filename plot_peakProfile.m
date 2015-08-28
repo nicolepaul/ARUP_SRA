@@ -1,7 +1,7 @@
 function plot_peakProfile(SDAT, x, y, eqname, str, unitno, convf, unitstr, nprofile, ncase)
 
 defaultFigureProperties;
-plotline = {'r','g','b','m','c','y'};
+plotline = {'b','m','g','r','c','y'};
 
 % Get size of screen in pixels
 set(0,'units','pixels')

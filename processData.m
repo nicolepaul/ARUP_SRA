@@ -42,7 +42,7 @@ T_range = linspace(1e-3,10,np);
 fn = 1./T_range;
 
 if outcrop;
-    [outx, outy] = processOutcrop(outcropfolder);
+    [outx, outy, dtx, dty] = processOutcrop(outcropfolder);
 end
 
 for i = 1:nfolders
@@ -80,15 +80,16 @@ for i = 1:nfolders
         NDAT{i,j}.RS_x = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,NDAT{i,j}.bedid)./G, E, G);
         NDAT{i,j}.RS_y = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,NDAT{i,j}.bedid)./G, E, G);
         
+        NDAT{i,j}.SA_x = NDAT{i,j}.RSx./NDAT{i,j}.RS_x;
+        NDAT{i,j}.SA_y = NDAT{i,j}.RSy./NDAT{i,j}.RS_y;
+        
+        
         %Outcrop if available
         if outcrop
-            NDAT{i,j}.outx = getPSA(fn, data(2,1), outx{i}./G, E, G);
-            NDAT{i,j}.outy = getPSA(fn, data(2,1), outy{i}./G, E, G);
+            NDAT{i,j}.outx = getPSA(fn, dtx(i), outx{i}./G, E, G);
+            NDAT{i,j}.outy = getPSA(fn, dty(i), outy{i}./G, E, G);
             NDAT{i,j}.SAx = NDAT{i,j}.RSx./NDAT{i,j}.outx;
-            NDAT{i,j}.SAy = NDAT{i,j}.RSx./NDAT{i,j}.outy;
-        else
-            NDAT{i,j}.SAx = NDAT{i,j}.RSx./NDAT{i,j}.RS_x;
-            NDAT{i,j}.SAy = NDAT{i,j}.RSx./NDAT{i,j}.RS_y;
+            NDAT{i,j}.SAy = NDAT{i,j}.RSy./NDAT{i,j}.outy;
         end
         
         NDAT{i,j}.E = E;

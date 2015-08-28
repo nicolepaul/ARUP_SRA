@@ -15,7 +15,7 @@ function plot_timeHistory(NDAT, x, y, eqname, str, unitno, convf, unitstr, surfb
 % - ncase: Number of cases (to appear on same plot)
 
 defaultFigureProperties;
-plotline = {'r','g','b','m','c','y'};
+plotline = {'b','m','g','r','c','y'};
 
 % Get size of screen in pixels
 set(0,'units','pixels')

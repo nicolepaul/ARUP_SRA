@@ -12,7 +12,7 @@ neq = size(NDAT,1);
 
 % Figure, axes, line properties
 defaultFigureProperties;
-plotline = {'r','g','b','m','c','y'};
+plotline = {'b','m','g','r','c','y'};
 bval = 0.8;
 gval = 0.1;
 rval = linspace(0.2, 1, neq);
@@ -152,6 +152,59 @@ for i = 1:neq
     linkaxes; tightfig;
     
 end
+
+% % TEMP TEMP TEMP TEMP
+% % X-Direction
+% for j = 1:nprofile
+%     figure;
+%     for k = 1:ncase
+%         subplot(p2(1),p2(2),k);
+%         % Plot all motions on one figure
+%             %                 legendstr = cell(neq, 1);
+%             xarray = [];
+%             for i = 1:neq
+%                 % X-Direction
+%                 xarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(x)];
+%                 plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
+%                 legend('-DynamicLegend');
+%             end
+%             grid on; xlabel('Period [s]'); ylabel(ystr);
+%             title(strcat(NDAT{i,j*ncase}.profile,': ',NDAT{i,ncase*j-(ncase-k)}.case,' ','-',' ',str,', X'));
+%         
+%         
+%     end
+%     set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+%     linkaxes; tightfig;
+% end
+% 
+% % Y-Direction
+% for j = 1:nprofile
+%     figure;
+%     for k = 1:ncase
+%         subplot(p2(1),p2(2),k);
+%         % Plot all motions on one figure
+%        
+%             yarray = [];
+%             for i = 1:neq
+%                 % Y-Direction
+%                 yarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(y)];
+%                 plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
+%                 legend('-DynamicLegend');
+%             end
+%             grid on; xlabel('Period [s]'); ylabel(ystr);
+%             title(strcat(NDAT{i,j*ncase}.profile,': ',NDAT{i,ncase*j-(ncase-k)}.case,' ','-',' ',str,', Y'));
+%         
+%     end
+%     
+%     set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+%     linkaxes; tightfig;
+% end
+% 
+% % TEMP TEMP TEMP
+
+
+
+
 
 % Summary plots
 if any(rs_bool(1:4))

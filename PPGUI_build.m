@@ -1451,7 +1451,7 @@ fig_hdl = handles.figure1;
     function generatefig_Callback(hObject,evendata) %#ok<INUSD>
         
         tic;
-
+        
         % Changing default figure properties
         set(0,'defaultFigureColor',[1 1 1]);
         set(0,'DefaultAxesFontSize',10)
@@ -1538,47 +1538,50 @@ fig_hdl = handles.figure1;
         
         % RS 1
         if get(handles.rsdata1,'Value')
-
+            
             plot_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI);
-
+            
         end
         
         
         % RS 2
         if get(handles.rsdata2,'Value')
-
+            
             plot_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI);
-
+            
         end
         
         
         % RS 3
         if get(handles.rsdata3,'Value') % TEMP - No outcrop yet
-
+            
             if isfield(NDAT{1,1},'outx')
                 plot_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI);
             else
                 warning('myfun:fdne','Skipping bedrock (outcrop) response spectrum because do not have outcrop information');
             end
-
+            
         end
         
         % RS 4
         if get(handles.rsdata4,'Value')
-
-            plot_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI);
-
+            if outcrop
+                plot_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification (Outcrop)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI);
+            else
+                plot_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI);
+            end
+            
         end
         
         
         %% PEAK PROFILE DATA
         
         % Find necessary calculations
-%         calc_pp1 = get(handles.ppmean, 'Value');
-%         calc_pp2 = get(handles.ppmax, 'Value');
-%         calc_pp3 = get(handles.ppmeanstd, 'Value');
-%         calc_pp4 = str2double(get(handles.ppstd, 'str'));
-%         pp_bool = [calc_pp1 calc_pp2 calc_pp3 calc_pp4];
+        %         calc_pp1 = get(handles.ppmean, 'Value');
+        %         calc_pp2 = get(handles.ppmax, 'Value');
+        %         calc_pp3 = get(handles.ppmeanstd, 'Value');
+        %         calc_pp4 = str2double(get(handles.ppstd, 'str'));
+        %         pp_bool = [calc_pp1 calc_pp2 calc_pp3 calc_pp4];
         
         
         % PP 1
@@ -1594,7 +1597,7 @@ fig_hdl = handles.figure1;
         % PP 4
         if get(handles.ppdata4, 'Value')
             plot_peakProfile(SDAT, 'erateyz', 'eratezx', eqname, 'Max Shear Strain Rate', 1, 1, {'1/s'}, nprofile, ncase)
-
+            
         end
         
         disp('Generation of figures complete');
