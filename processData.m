@@ -103,15 +103,14 @@ for i = 1:nfolders
     % Extract solid set data
     for j = 1:num_sset
         data = csvread(fullfile(foldername,strcat('Solids_',names_sset{j},'.csv')), 0,2)';
-        inds_sid = find(not(cellfun('isempty',strfind(solid_dat{2},names_sset{j}))));
+        inds_sid = not(cellfun('isempty',strfind(solid_dat{2},names_sset{j})));
         SDAT{i,j}.nids = solid_dat{1}(inds_sid);
         SDAT{i,j}.t = data(:,1);
         SDAT{i,j}.epsyz = data(:,2:4:end);
         SDAT{i,j}.epszx = data(:,3:4:end);
         SDAT{i,j}.sigyz = data(:,4:4:end);
         SDAT{i,j}.sigzx = data(:,5:4:end);
-        
-        
+
         
         SDAT{i,j}.erateyz = bsxfun( @rdivide, (SDAT{i,j}.epsyz(2:end,:) - SDAT{i,j}.epsyz(1:end-1,:)) , (SDAT{i,j}.t(2:end,1) - SDAT{i,j}.t(1:end-1,1)) );
         SDAT{i,j}.eratezx = bsxfun( @rdivide, (SDAT{i,j}.epszx(2:end,:) - SDAT{i,j}.epszx(1:end-1,:)) ,  (SDAT{i,j}.t(2:end,1) - SDAT{i,j}.t(1:end-1,1)) );
@@ -120,6 +119,15 @@ for i = 1:nfolders
         solid_opt = find(solid_optc==1);
         
         SDAT{i,j}.z = solid_dat{3}(solid_opt);
+        
+        if exist(fullfile(foldername,strcat('VertStress_',names_sset{j},'.csv')),'file')
+            vertdata = csvread(fullfile(foldername,strcat('VertStress_',names_sset{j},'.csv')), 0, 0);
+            vertstress = interp1(vertdata(:,1),vertdata(:,2),SDAT{i,j}.z);
+            SDAT{i,j}.csryz = SDAT{i,j}.sigyz./repmat(vertstress',numel(SDAT{i,j}.t),1);
+            SDAT{i,j}.csrzx = SDAT{i,j}.sigzx./repmat(vertstress',numel(SDAT{i,j}.t),1);
+        end
+        
+        
         SDAT{i,j}.surfid = solid_dat{3}(solid_opt) == max(solid_dat{3}(solid_opt));
         SDAT{i,j}.bedid = solid_dat{3}(solid_opt) == min(solid_dat{3}(solid_opt));
         [tok, rem] = strtok(names_sset{j}, '_');
