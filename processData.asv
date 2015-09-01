@@ -65,8 +65,8 @@ for i = 1:nfolders
         NDAT{i,j}.ay = data(:,7:6:end);
         NDAT{i,j}.z = node_dat{5}(inds_nid);
         node_optc = strcmp(node_dat{2},names_nset{j});
-        node_opt = find(node_optc==1);
-%         node_opt = node_opt - node_opt(1) + 1;
+        node_opt = find(not(cellfun('isempty',node_optc)));
+        node_opt = node_opt - node_opt(1);
         NDAT{i,j}.surfid = node_dat{5}(node_opt) == max(node_dat{5}(node_opt));
         NDAT{i,j}.bedid = node_dat{5}(node_opt) == min(node_dat{5}(node_opt));
         [tok, rem] = strtok(names_nset{j}, '_');

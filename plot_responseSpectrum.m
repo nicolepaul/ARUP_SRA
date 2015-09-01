@@ -100,7 +100,7 @@ for i = 1:neq
         legend('-dynamicLegend','Location','NorthEast');
         hold off;
     end
-    set(gcf,'Position',ppinv.*[50 50 450*p(1) 400*p(2)]);
+    set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
     linkaxes; tightfig;
     
     % Y-Direction
@@ -148,13 +148,14 @@ for i = 1:neq
         legend('-dynamicLegend','Location','NorthEast');
         hold off;
     end
-    set(gcf,'Position',ppinv.*[50 50 450*p(1) 400*p(2)]);
+    set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
     linkaxes; tightfig;
     
 end
 
 % % TEMP TEMP TEMP TEMP
 % % X-Direction
+% tfact = 1;
 % for j = 1:nprofile
 %     figure;
 %     for k = 1:ncase
@@ -165,7 +166,7 @@ end
 %             for i = 1:neq
 %                 % X-Direction
 %                 xarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(x)];
-%                 plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
+%                 plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
 %                 legend('-DynamicLegend');
 %             end
 %             grid on; xlabel('Period [s]'); ylabel(ystr);
@@ -188,7 +189,7 @@ end
 %             for i = 1:neq
 %                 % Y-Direction
 %                 yarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(y)];
-%                 plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
+%                 plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
 %                 legend('-DynamicLegend');
 %             end
 %             grid on; xlabel('Period [s]'); ylabel(ystr);
