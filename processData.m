@@ -64,9 +64,9 @@ for i = 1:nfolders
         NDAT{i,j}.ax = data(:,6:6:end);
         NDAT{i,j}.ay = data(:,7:6:end);
         NDAT{i,j}.z = node_dat{5}(inds_nid);
+        
         node_optc = strcmp(node_dat{2},names_nset{j});
         node_opt = find(node_optc==1);
-%         node_opt = node_opt - node_opt(1) + 1;
         NDAT{i,j}.surfid = node_dat{5}(node_opt) == max(node_dat{5}(node_opt));
         NDAT{i,j}.bedid = node_dat{5}(node_opt) == min(node_dat{5}(node_opt));
         [tok, rem] = strtok(names_nset{j}, '_');
@@ -116,9 +116,12 @@ for i = 1:nfolders
         SDAT{i,j}.erateyz = bsxfun( @rdivide, (SDAT{i,j}.epsyz(2:end,:) - SDAT{i,j}.epsyz(1:end-1,:)) , (SDAT{i,j}.t(2:end,1) - SDAT{i,j}.t(1:end-1,1)) );
         SDAT{i,j}.eratezx = bsxfun( @rdivide, (SDAT{i,j}.epszx(2:end,:) - SDAT{i,j}.epszx(1:end-1,:)) ,  (SDAT{i,j}.t(2:end,1) - SDAT{i,j}.t(1:end-1,1)) );
         
-        SDAT{i,j}.z = solid_dat{3}(inds_sid);
-        SDAT{i,j}.surfid = solid_dat{3}(inds_sid) == max(solid_dat{3}(inds_sid));
-        SDAT{i,j}.bedid = solid_dat{3}(inds_sid) == min(solid_dat{3}(inds_sid));
+        solid_optc = strcmp(solid_dat{2},names_sset{j});
+        solid_opt = find(solid_optc==1);
+        
+        SDAT{i,j}.z = solid_dat{3}(solid_opt);
+        SDAT{i,j}.surfid = solid_dat{3}(solid_opt) == max(solid_dat{3}(solid_opt));
+        SDAT{i,j}.bedid = solid_dat{3}(solid_opt) == min(solid_dat{3}(solid_opt));
         [tok, rem] = strtok(names_sset{j}, '_');
         SDAT{i,j}.profile = tok;
         SDAT{i,j}.case = rem(2:end);
