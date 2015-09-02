@@ -53,6 +53,8 @@ for i = 1:nfolders
 
     % Extract node set data
     for j = 1:num_nset
+        node_dat = textscan(fopen(fullfile(foldername,'req_node_sets.csv')),'%f %s %f %f %f','Headerlines',1,'Delimiter',',');
+
         data = csvread(fullfile(foldername,strcat('Nodes_',names_nset{j},'.csv')), 0,2)';
         inds_nid = find(not(cellfun('isempty',strfind(node_dat{2},names_nset{j}))));
         NDAT{i,j}.nids = node_dat{1}(inds_nid);
@@ -77,7 +79,7 @@ for i = 1:nfolders
         % Determine response spectrum for given E
         disp(['Determining response spectrum for damping of ' num2str(E) ' (' names_nset{j} ')']);
         
-        % Surface
+        % Surface   
         NDAT{i,j}.RSx = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,NDAT{i,j}.surfid)./G, E, G);
         NDAT{i,j}.RSy = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,NDAT{i,j}.surfid)./G, E, G);
         % Infield
@@ -102,6 +104,8 @@ for i = 1:nfolders
     end
     % Extract solid set data
     for j = 1:num_sset
+        solid_dat = textscan(fopen(fullfile(foldername,'req_solid_sets.csv')),'%f %s %f','Headerlines',1,'Delimiter',',');
+
         data = csvread(fullfile(foldername,strcat('Solids_',names_sset{j},'.csv')), 0,2)';
         inds_sid = not(cellfun('isempty',strfind(solid_dat{2},names_sset{j})));
         SDAT{i,j}.nids = solid_dat{1}(inds_sid);
@@ -123,6 +127,7 @@ for i = 1:nfolders
         if exist(fullfile(foldername,strcat('VertStress_',names_sset{j},'.csv')),'file')
             vertdata = csvread(fullfile(foldername,strcat('VertStress_',names_sset{j},'.csv')), 0, 0);
             vertstress = interp1(vertdata(:,1),vertdata(:,2),SDAT{i,j}.z);
+
             SDAT{i,j}.csryz = SDAT{i,j}.sigyz./repmat(vertstress',numel(SDAT{i,j}.t),1);
             SDAT{i,j}.csrzx = SDAT{i,j}.sigzx./repmat(vertstress',numel(SDAT{i,j}.t),1);
         end

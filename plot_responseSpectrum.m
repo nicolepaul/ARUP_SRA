@@ -1,4 +1,4 @@
-function plot_responseSpectrum(NDAT, x, y, E, unitstr, conv_val, eqname, str, ystr, nprofile, ncase, rs_bool, rec_bool, directorystr, rec_type, convtoSI)
+function plot_responseSpectrum(NDAT, x, y, E, unitstr, conv_val, eqname, str, ystr, nprofile, ncase, rs_bool, rec_bool, directorystr, rec_type, convtoSI, oneplot)
 
 % Checking damping
 if E ~= NDAT{1,1}.E
@@ -51,157 +51,159 @@ np = 150;
 p = numSubplots(nprofile);
 p2 = numSubplots(ncase);
 
-% Plotting individual response spectra
-for i = 1:neq
-    
-    % Generating figures
-    
-    % X-Direction
-    figure;
-    for j = 1:nprofile
-        subplot(p(1), p(2), j);
-        for k = 1:ncase
-            plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
-            grid on; hold on;
-            xlabel('Period [s]'); ylabel(ystr);
-            title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', X'));
-        end
-        % Add recorded plots if requested
-        if rec_bool
-            % Surface Acceleration
-            if rec_type == 1
-                
-                [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
-                num_rec = size(RS_rec,2);
-                shade = [0 0.4 0.8];
-                for m = 1:num_rec
-                    plot(RS_rec{i,m}(:,1), conv_val*RS_rec{i,m}(:,2), '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
-                end
-            % Spectral Amplificaiton 
-            elseif rec_type == 4
-                
-                [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
-                num_rec = size(RS_rec,2);
-                shade = [0 0.4 0.8];
-                
-                for m = 1:num_rec
-                    RS = interp1(RS_rec{i,m}(:,1), RS_rec{i,m}(:,2), NDAT{i,1}.T)';
-                    if isfield(NDAT{i,1},'outx')
-                        SA = RS ./ NDAT{i,1}.outx;
-                    else
-                        SA = RS ./ NDAT{i,1}.RS_x;
-                    end
-                    plot(NDAT{i,1}.T, SA, '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
-                end
-                
-                
+if ~oneplot
+    % Plotting individual response spectra
+    for i = 1:neq
+        
+        % Generating figures
+        
+        % X-Direction
+        figure;
+        for j = 1:nprofile
+            subplot(p(1), p(2), j);
+            for k = 1:ncase
+                plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
+                grid on; hold on;
+                xlabel('Period [s]'); ylabel(ystr);
+                title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', X'));
             end
+            % Add recorded plots if requested
+            if rec_bool
+                % Surface Acceleration
+                if rec_type == 1
+                    
+                    [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
+                    num_rec = size(RS_rec,2);
+                    shade = [0 0.4 0.8];
+                    for m = 1:num_rec
+                        plot(RS_rec{i,m}(:,1), conv_val*RS_rec{i,m}(:,2), '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
+                    end
+                    % Spectral Amplificaiton
+                elseif rec_type == 4
+                    
+                    [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
+                    num_rec = size(RS_rec,2);
+                    shade = [0 0.4 0.8];
+                    
+                    for m = 1:num_rec
+                        RS = interp1(RS_rec{i,m}(:,1), RS_rec{i,m}(:,2), NDAT{i,1}.T)';
+                        if isfield(NDAT{i,1},'outx')
+                            SA = RS ./ NDAT{i,1}.outx;
+                        else
+                            SA = RS ./ NDAT{i,1}.RS_x;
+                        end
+                        plot(NDAT{i,1}.T, SA, '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
+                    end
+                    
+                    
+                end
+            end
+            legend('-dynamicLegend','Location','NorthEast');
+            hold off;
         end
-        legend('-dynamicLegend','Location','NorthEast');
-        hold off;
+        set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+        linkaxes; tightfig;
+        
+        % Y-Direction
+        figure;
+        for j = 1:nprofile
+            subplot(p(1), p(2), j);
+            for k = 1:ncase
+                plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
+                grid on; hold on;
+                xlabel('Period [s]'); ylabel(ystr);
+                title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', Y'));
+            end
+            % Add recorded plots if requested
+            if rec_bool
+                % Surface Acceleration
+                if rec_type == 1
+                    
+                    [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
+                    num_rec = size(RS_rec,2);
+                    shade = [0 0.4 0.8];
+                    for m = 1:num_rec
+                        plot(RS_rec{i,m}(:,1), conv_val*RS_rec{i,m}(:,3), '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
+                    end
+                    % Spectral Amplificaiton
+                elseif rec_type == 4
+                    
+                    [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
+                    num_rec = size(RS_rec,2);
+                    shade = [0 0.4 0.8];
+                    
+                    for m = 1:num_rec
+                        RS = interp1(RS_rec{i,m}(:,1), RS_rec{i,m}(:,3), NDAT{i,1}.T)';
+                        if isfield(NDAT{i,1},'outy')
+                            SA = RS ./ NDAT{i,1}.outy;
+                        else
+                            SA = RS ./ NDAT{i,1}.RS_y;
+                        end
+                        plot(NDAT{i,1}.T, SA, '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
+                    end
+                    
+                    
+                end
+            end
+            
+            legend('-dynamicLegend','Location','NorthEast');
+            hold off;
+        end
+        set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+        linkaxes; tightfig;
+        
     end
-    set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
-    linkaxes; tightfig;
+    
+    % If putting all folder analyses on one plot
+else
+    % X-Direction
+    tfact = 1;
+    for j = 1:nprofile
+        figure;
+        for k = 1:ncase
+            subplot(p2(1),p2(2),k);
+            % Plot all motions on one figure
+            %                 legendstr = cell(neq, 1);
+            xarray = [];
+            for i = 1:neq
+                % X-Direction
+                xarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(x)];
+                plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), plotline{i}, 'DisplayName', eqname{i}, 'LineWidth', 1.5); hold on;
+                legend('-DynamicLegend','Location','NorthEast');
+            end
+            grid on; xlabel('Period [s]'); ylabel(ystr);
+            title(strcat(NDAT{i,j*ncase}.profile,': ',NDAT{i,ncase*j-(ncase-k)}.case,' ','-',' ',str,', X'));
+            
+            
+        end
+        set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+        linkaxes; tightfig;
+    end
     
     % Y-Direction
-    figure;
     for j = 1:nprofile
-        subplot(p(1), p(2), j);
+        figure;
         for k = 1:ncase
-            plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
-            grid on; hold on;
-            xlabel('Period [s]'); ylabel(ystr);
-            title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', Y'));
-        end
-        % Add recorded plots if requested
-        if rec_bool
-            % Surface Acceleration
-            if rec_type == 1
-                
-                [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
-                num_rec = size(RS_rec,2);
-                shade = [0 0.4 0.8];
-                for m = 1:num_rec
-                    plot(RS_rec{i,m}(:,1), conv_val*RS_rec{i,m}(:,3), '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
-                end
-            % Spectral Amplificaiton 
-            elseif rec_type == 4
-                
-                [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
-                num_rec = size(RS_rec,2);
-                shade = [0 0.4 0.8];
-                
-                for m = 1:num_rec
-                    RS = interp1(RS_rec{i,m}(:,1), RS_rec{i,m}(:,3), NDAT{i,1}.T)';
-                    if isfield(NDAT{i,1},'outy')
-                        SA = RS ./ NDAT{i,1}.outy;
-                    else
-                        SA = RS ./ NDAT{i,1}.RS_y;
-                    end
-                    plot(NDAT{i,1}.T, SA, '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
-                end
-                
-                
+            subplot(p2(1),p2(2),k);
+            % Plot all motions on one figure
+            
+            yarray = [];
+            for i = 1:neq
+                % Y-Direction
+                yarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(y)];
+                plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), plotline{i}, 'DisplayName', eqname{i}, 'LineWidth', 1.5); hold on;
+                legend('-DynamicLegend','Location','NorthEast');
             end
+            grid on; xlabel('Period [s]'); ylabel(ystr);
+            title(strcat(NDAT{i,j*ncase}.profile,': ',NDAT{i,ncase*j-(ncase-k)}.case,' ','-',' ',str,', Y'));
+            
         end
         
-        legend('-dynamicLegend','Location','NorthEast');
-        hold off;
+        set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+        linkaxes; tightfig;
     end
-    set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
-    linkaxes; tightfig;
-    
 end
-
-% % TEMP TEMP TEMP TEMP
-% % X-Direction
-% tfact = 1;
-% for j = 1:nprofile
-%     figure;
-%     for k = 1:ncase
-%         subplot(p2(1),p2(2),k);
-%         % Plot all motions on one figure
-%             %                 legendstr = cell(neq, 1);
-%             xarray = [];
-%             for i = 1:neq
-%                 % X-Direction
-%                 xarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(x)];
-%                 plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
-%                 legend('-DynamicLegend');
-%             end
-%             grid on; xlabel('Period [s]'); ylabel(ystr);
-%             title(strcat(NDAT{i,j*ncase}.profile,': ',NDAT{i,ncase*j-(ncase-k)}.case,' ','-',' ',str,', X'));
-%         
-%         
-%     end
-%     set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
-%     linkaxes; tightfig;
-% end
-% 
-% % Y-Direction
-% for j = 1:nprofile
-%     figure;
-%     for k = 1:ncase
-%         subplot(p2(1),p2(2),k);
-%         % Plot all motions on one figure
-%        
-%             yarray = [];
-%             for i = 1:neq
-%                 % Y-Direction
-%                 yarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(y)];
-%                 plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
-%                 legend('-DynamicLegend');
-%             end
-%             grid on; xlabel('Period [s]'); ylabel(ystr);
-%             title(strcat(NDAT{i,j*ncase}.profile,': ',NDAT{i,ncase*j-(ncase-k)}.case,' ','-',' ',str,', Y'));
-%         
-%     end
-%     
-%     set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
-%     linkaxes; tightfig;
-% end
-% 
-% % TEMP TEMP TEMP
+% TEMP TEMP TEMP
 
 
 

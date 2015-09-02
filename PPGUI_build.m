@@ -144,6 +144,7 @@ fig_hdl = handles.figure1;
             'FontWeight', 'bold', ...
             'BackgroundColor', [1 1 1], ...
             'String', 'Hysteresis Data:', ...
+            'Visible', 'off', ...
             'HorizontalAlignment', 'left');
         
         handles.text30 = uicontrol( ...
@@ -710,8 +711,18 @@ fig_hdl = handles.figure1;
             'Style', 'checkbox', ...
             'Units', 'characters', ...
             'Position', ppinv.*[2.8 5.5 50 1.5], ...
+            'Visible', 'off', ...
             'BackgroundColor', [1 1 1], ...
             'String', 'Specified Layers');
+        
+        handles.oneplot = uicontrol( ...
+            'Parent', handles.PANELLEFT, ...
+            'Tag', 'oneplot', ...
+            'Style', 'checkbox', ...
+            'Units', 'characters', ...
+            'Position', ppinv.*[2.8 5.5 50 1.5], ...
+            'BackgroundColor', [1 1 1], ...
+            'String', 'Put All Results on One Plot');
         
         
         handles.rsmean = uicontrol( ...
@@ -1051,6 +1062,7 @@ fig_hdl = handles.figure1;
             'Units', 'characters', ...
             'Position', ppinv.*[6.6 1.5 25 4], ...
             'BackgroundColor', [1 1 1], ...
+            'Visible', 'off', ...
             'String', 'Select directory...');
         
         handles.thabox = uicontrol( ...
@@ -1472,6 +1484,7 @@ fig_hdl = handles.figure1;
         E = str2double(get(handles.rsdamping,'str'));
         outcrop = get(handles.outcrop, 'Value');
         outcropfolder = get(handles.outcropfolder,'str');
+        oneplot = get(handles.oneplot, 'Value');
         
         % Process data
         if ~exist(fullfile(directorystr,'zPROCESSED_DATA.mat'),'file'); % Create data structures if does not exist yet
@@ -1549,7 +1562,7 @@ fig_hdl = handles.figure1;
         % RS 1
         if get(handles.rsdata1,'Value')
             
-            plot_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI);
+            plot_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI, oneplot);
             
         end
         
@@ -1557,7 +1570,7 @@ fig_hdl = handles.figure1;
         % RS 2
         if get(handles.rsdata2,'Value')
             
-            plot_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI);
+            plot_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI, oneplot);
             
         end
         
@@ -1566,7 +1579,7 @@ fig_hdl = handles.figure1;
         if get(handles.rsdata3,'Value') % TEMP - No outcrop yet
             
             if isfield(NDAT{1,1},'outx')
-                plot_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI);
+                plot_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI, oneplot);
             else
                 warning('myfun:fdne','Skipping bedrock (outcrop) response spectrum because do not have outcrop information');
             end
@@ -1576,9 +1589,9 @@ fig_hdl = handles.figure1;
         % RS 4
         if get(handles.rsdata4,'Value')
             if outcrop
-                plot_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification (Outcrop)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI);
+                plot_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification (Outcrop)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot);
             else
-                plot_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI);
+                plot_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot);
             end
             
         end
@@ -1596,18 +1609,18 @@ fig_hdl = handles.figure1;
         
         % PP 1
         if get(handles.ppdata1, 'Value')
-            plot_peakProfile(SDAT, 'epsyz', 'epszx', eqname, 'Max Shear Strain', 5, convf, unitstr, nprofile, ncase)
+            plot_peakProfile(SDAT, 'epsyz', 'epszx', eqname, 'Max Shear Strain', 5, convf, unitstr, nprofile, ncase, oneplot)
         end
         
         % PP 2
         if get(handles.ppdata2, 'Value')
-            plot_peakProfile(SDAT, 'sigyz', 'sigzx', eqname, 'Max Shear Stress', 4, convf, unitstr, nprofile, ncase)
+            plot_peakProfile(SDAT, 'sigyz', 'sigzx', eqname, 'Max Shear Stress', 4, convf, unitstr, nprofile, ncase, oneplot)
         end
         
         % PP 3b
         if get(handles.ppdata3b, 'Value')
             if isfield(SDAT{1,1},'csryz')
-                plot_peakProfile(SDAT, 'csryz', 'csrzx', eqname, 'Max Cyclic Shear Ratio', 1, 100, {'%'}, nprofile, ncase)
+                plot_peakProfile(SDAT, 'csryz', 'csrzx', eqname, 'Max Cyclic Shear Ratio', 1, 100, {'%'}, nprofile, ncase, oneplot)
             else
                 warning('myfun:vertsdne','Cyclic stress ratios not calculated.  Check that vertical stresses vs depth are given for each unique solid set.');
             end
@@ -1615,7 +1628,7 @@ fig_hdl = handles.figure1;
         
         % PP 4
         if get(handles.ppdata4, 'Value')
-            plot_peakProfile(SDAT, 'erateyz', 'eratezx', eqname, 'Max Shear Strain Rate', 1, 1, {'1/s'}, nprofile, ncase)
+            plot_peakProfile(SDAT, 'erateyz', 'eratezx', eqname, 'Max Shear Strain Rate', 1, 1, {'1/s'}, nprofile, ncase, oneplot)
             
         end
         
