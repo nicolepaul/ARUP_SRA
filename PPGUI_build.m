@@ -1620,7 +1620,7 @@ fig_hdl = handles.figure1;
         % PP 3b
         if get(handles.ppdata3b, 'Value')
             if isfield(SDAT{1,1},'csryz')
-                plot_peakProfile(SDAT, 'csryz', 'csrzx', eqname, 'Max Cyclic Shear Ratio', 1, 100, {'%'}, nprofile, ncase, oneplot)
+                plot_peakProfile(SDAT, 'csryz', 'csrzx', eqname, 'Max Cyclic Stress Ratio', 1, 100, {'%'}, nprofile, ncase, oneplot)
             else
                 warning('myfun:vertsdne','Cyclic stress ratios not calculated.  Check that vertical stresses vs depth are given for each unique solid set.');
             end

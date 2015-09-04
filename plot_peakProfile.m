@@ -1,9 +1,11 @@
 function plot_peakProfile(SDAT, x, y, eqname, str, unitno, convf, unitstr, nprofile, ncase, oneplot)
 
 defaultFigureProperties;
-plotline = {'b','m','g','r','c','y'};
+
 
 plotline = {'b','m','g','r','c','y'};
+% plotline = {'r','m','k','g','c','b'};
+% plotline = {'k', 'b','r'};
 bval = 0.8;
 gval = 0.1;
 neq = numel(eqname);
@@ -43,7 +45,8 @@ if ~oneplot
             subplot(1, nprofile, j);
             legendstr = cell(ncase,1);
             for k = 1:ncase
-                plot(peak_x{i,ncase*j-(ncase-k)}*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z, plotline{k}, 'LineWidth', 1);
+                [~,sortinds] = sort(SDAT{i,ncase*j-(ncase-k)}.z);
+                plot(peak_x{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds), plotline{k}, 'LineWidth', 1);
                 grid on; hold on;
                 xlabel(strcat(str, ', YZ',' [',unitstr{unitno},']'));
                 ylabel('Depth [m]');
@@ -63,7 +66,8 @@ if ~oneplot
             subplot(1, nprofile, j);
             legendstr = cell(ncase,1);
             for k = 1:ncase
-                plot(peak_y{i,ncase*j-(ncase-k)}*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z, plotline{k}, 'LineWidth', 1);
+                [~,sortinds] = sort(SDAT{i,ncase*j-(ncase-k)}.z);
+                plot(peak_y{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds), plotline{k}, 'LineWidth', 1);
                 grid on; hold on;
                 xlabel(strcat(str, ', ZX',' [',unitstr{unitno},']'));
                 ylabel('Depth [m]');
@@ -87,7 +91,8 @@ else
         for k = 1:ncase
             subplot(p2(1),p2(2),k);
             for i = 1:neq
-                plot(peak_x{i,ncase*j-(ncase-k)}*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z, plotline{i},  'LineWidth', 1, 'DisplayName', eqname{i}); hold on;
+                [~, sortinds] = SDAT{i,ncase*j-(ncase-k)}.z;
+                plot(peak_x{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds), plotline{i},  'LineWidth', 1, 'DisplayName', eqname{i}); hold on;
                 grid on;
                 xlabel(strcat(str, ', YZ',' [',unitstr{unitno},']'));
                 ylabel('Depth [m]');
@@ -108,7 +113,8 @@ else
         for k = 1:ncase
             subplot(p2(1),p2(2),k);
             for i = 1:neq
-                plot(peak_y{i,ncase*j-(ncase-k)}*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z, plotline{i},  'LineWidth', 1, 'DisplayName', eqname{i}); hold on;
+                [~, sortinds] = SDAT{i,ncase*j-(ncase-k)}.z;
+                plot(peak_y{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds), plotline{i},  'LineWidth', 1, 'DisplayName', eqname{i}); hold on;
                 grid on;
                 xlabel(strcat(str, ', ZX',' [',unitstr{unitno},']'));
                 ylabel('Depth [m]');

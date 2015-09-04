@@ -13,6 +13,8 @@ neq = size(NDAT,1);
 % Figure, axes, line properties
 defaultFigureProperties;
 plotline = {'b','m','g','r','c','y'};
+% plotline = {'r','m','k','g','c','b'};
+% plotline = {'k', 'b','r'};
 bval = 0.8;
 gval = 0.1;
 rval = linspace(0.2, 1, neq);

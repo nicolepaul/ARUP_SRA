@@ -110,6 +110,16 @@ for i = 1:nfolders
         inds_sid = not(cellfun('isempty',strfind(solid_dat{2},names_sset{j})));
         SDAT{i,j}.nids = solid_dat{1}(inds_sid);
         SDAT{i,j}.t = data(:,1);
+        
+        solid_optc = strcmp(solid_dat{2},names_sset{j});
+        solid_opt = find(solid_optc==1);
+        
+        SDAT{i,j}.z = solid_dat{3}(solid_opt);
+%         [zsort, sortinds] = sort(SDAT{i,j}.z);
+%         
+%         SDAT{i,j}.z = zsort;
+%         data = data(:, sortinds);
+        
         SDAT{i,j}.epsyz = data(:,2:4:end);
         SDAT{i,j}.epszx = data(:,3:4:end);
         SDAT{i,j}.sigyz = data(:,4:4:end);
@@ -119,10 +129,8 @@ for i = 1:nfolders
         SDAT{i,j}.erateyz = bsxfun( @rdivide, (SDAT{i,j}.epsyz(2:end,:) - SDAT{i,j}.epsyz(1:end-1,:)) , (SDAT{i,j}.t(2:end,1) - SDAT{i,j}.t(1:end-1,1)) );
         SDAT{i,j}.eratezx = bsxfun( @rdivide, (SDAT{i,j}.epszx(2:end,:) - SDAT{i,j}.epszx(1:end-1,:)) ,  (SDAT{i,j}.t(2:end,1) - SDAT{i,j}.t(1:end-1,1)) );
         
-        solid_optc = strcmp(solid_dat{2},names_sset{j});
-        solid_opt = find(solid_optc==1);
-        
-        SDAT{i,j}.z = solid_dat{3}(solid_opt);
+       
+        % Sort elevation
         
         if exist(fullfile(foldername,strcat('VertStress_',names_sset{j},'.csv')),'file')
             vertdata = csvread(fullfile(foldername,strcat('VertStress_',names_sset{j},'.csv')), 0, 0);
