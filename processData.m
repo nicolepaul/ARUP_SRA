@@ -42,7 +42,7 @@ T_range = linspace(1e-3,10,np);
 fn = 1./T_range;
 
 if outcrop;
-    [outx, outy, dtx, dty] = processOutcrop(outcropfolder);
+    [outx, outy, dtx, dty, outvx, outvy, outtx, outty] = processOutcrop(outcropfolder);
 end
 
 for i = 1:nfolders
@@ -96,6 +96,12 @@ for i = 1:nfolders
             NDAT{i,j}.outy = getPSA(fn, dty(i), outy{i}./G, E, G);
             NDAT{i,j}.SAx = NDAT{i,j}.RSx./NDAT{i,j}.outx;
             NDAT{i,j}.SAy = NDAT{i,j}.RSy./NDAT{i,j}.outy;
+            NDAT{i,j}.outvx = outvx{i};
+            NDAT{i,j}.outvy = outvy{i};
+            NDAT{i,j}.outax = outx{i};
+            NDAT{i,j}.outay = outy{i};
+            NDAT{i,j}.outtx = outtx{i};
+            NDAT{i,j}.outty = outty{i};
         end
         
         NDAT{i,j}.E = E;

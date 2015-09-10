@@ -1,4 +1,4 @@
-function [outcrop_x, outcrop_y, dtx, dty] = processOutcrop(outcropfolder)
+function [outcrop_x, outcrop_y, dtx, dty, outcrop_vx, outcrop_vy, outcrop_tx, outcrop_ty] = processOutcrop(outcropfolder)
 
 % Creating list of folders and files
 % FileList = dir('GM_2575yr');
@@ -10,6 +10,10 @@ N = size(FileList, 1);
 % Initialization
 outcrop_x = cell(N,1);
 outcrop_y = cell(N,1);
+outcrop_vx = cell(N,1);
+outcrop_vy = cell(N,1);
+outcrop_tx = cell(N,1);
+outcrop_ty = cell(N,1);
 dtx = NaN(N,1);
 dty = NaN(N,1);
 for i = 1:N
@@ -27,5 +31,10 @@ for i = 1:N
     
     outcrop_x{i} = (x(2:end,2)-x(1:end-1,2))./(x(2:end,1)-x(1:end-1,1));
     outcrop_y{i} = (y(2:end,2)-y(1:end-1,2))./(y(2:end,1)-y(1:end-1,1));
+    
+    outcrop_vx{i} = x(:,2);
+    outcrop_vy{i} = y(:,2);
+    outcrop_tx{i} = x(:,1);
+    outcrop_ty{i} = y(:,1);
     
 end

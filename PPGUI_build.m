@@ -1511,29 +1511,37 @@ fig_hdl = handles.figure1;
         
         % TH1
         if get(handles.thdata1,'Value')
-            plot_timeHistory2(NDAT, 'ax', 'ay', eqname, 'Surface Acceleration', 1, convf, unitstr, 1, nprofile, ncase);
+            plot_timeHistory(NDAT, 't', 'ax', 'ay', eqname, 'Surface Acceleration', 1, convf, unitstr, 1, nprofile, ncase);
         end
         
         % TH 2
         
         if get(handles.thdata2,'Value')
-            plot_timeHistory(NDAT, 'vx', 'vy', eqname, 'Surface Velocity', 2, convf, unitstr, 1, nprofile, ncase);
+            plot_timeHistory(NDAT, 't', 'vx', 'vy', eqname, 'Surface Velocity', 2, convf, unitstr, 1, nprofile, ncase);
         end
         
         
         % TH 3
         if get(handles.thdata3,'Value')
-            plot_timeHistory(NDAT, 'dx','dy', eqname, 'Surface Displacement', 3,  convf, unitstr, 1, nprofile, ncase);
+            plot_timeHistory(NDAT, 't', 'dx','dy', eqname, 'Surface Displacement', 3,  convf, unitstr, 1, nprofile, ncase);
         end
         
         % TH 4
         if get(handles.thdata4,'Value')
-            plot_timeHistory(NDAT, 'ax', 'ay', eqname, 'Bedrock (Infield) Acceleration', 1, convf, unitstr, 0, nprofile, ncase);
+            if isfield(NDAT{1,1},'outx')
+                plot_timeHistory(NDAT, 'outtx', 'outax', 'outay', eqname,'Bedrock (Outcrop) Acceleration', 1, convf, unitstr, 0, nprofile, ncase);
+            else
+                plot_timeHistory(NDAT, 't', 'ax', 'ay', eqname, 'Bedrock (Infield) Acceleration', 1, convf, unitstr, 0, nprofile, ncase);
+            end
         end
         
         % TH 5
         if get(handles.thdata5,'Value')
-            plot_timeHistory(NDAT, 'vx', 'vy', eqname,'Bedrock (Infield) Velocity', 2, convf, unitstr, 0, nprofile, ncase);
+            if isfield(NDAT{1,1},'outx')
+                plot_timeHistory(NDAT, 'outtx', 'outvx', 'outvy', eqname,'Bedrock (Outcrop) Velocity', 2, convf, unitstr, 0, nprofile, ncase);
+            else
+                plot_timeHistory(NDAT, 't', 'vx', 'vy', eqname,'Bedrock (Infield) Velocity', 2, convf, unitstr, 0, nprofile, ncase);
+            end
         end
         
         

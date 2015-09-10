@@ -1,4 +1,4 @@
-function plot_timeHistory(NDAT, x, y, eqname, str, unitno, convf, unitstr, surfbool, nprofile, ncase)
+function plot_timeHistory(NDAT, t, x, y, eqname, str, unitno, convf, unitstr, surfbool, nprofile, ncase)
 % plot_timeHistory
 %
 % INPUTS:
@@ -38,9 +38,16 @@ for i = 1:n_eq
             if surfbool
                 inds = NDAT{i,ncase*j-(ncase-k)}.surfid';
             else
-                inds = NDAT{i,ncase*j-(ncase-k)}.bedid';
+                if strcmpi(x,'outvx') 
+                    inds = 1;
+                elseif strcmpi(x,'outax')
+                    inds = 1;
+                    yvals = [yvals; 0];
+                else
+                    inds = NDAT{i,ncase*j-(ncase-k)}.bedid';
+                end
             end
-            plot(NDAT{i,ncase*j-(ncase-k)}.t, convf(unitno).*yvals(:, inds), plotline{k}, 'LineWidth', 1); 
+            plot(NDAT{i,ncase*j-(ncase-k)}.(t), convf(unitno).*yvals(:, inds), plotline{k}, 'LineWidth', 1); 
             hold on; grid on;
             xlabel('Time [s]'); ylabel(strcat(str,', X',' [',unitstr{unitno},']'));
             title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', X'));
@@ -63,9 +70,16 @@ for i = 1:n_eq
             if surfbool
                 inds = NDAT{i,ncase*j-(ncase-k)}.surfid';
             else
-                inds = NDAT{i,ncase*j-(ncase-k)}.bedid';
+                if strcmpi(y,'outvy')
+                    inds = 1;
+                elseif strcmpi(y,'outay')
+                    inds = 1;
+                    yvals = [yvals; 0];
+                else
+                    inds = NDAT{i,ncase*j-(ncase-k)}.bedid';
+                end
             end
-            plot(NDAT{i,ncase*j-(ncase-k)}.t, convf(unitno).*yvals(:, inds), plotline{k}, 'LineWidth', 1); 
+            plot(NDAT{i,ncase*j-(ncase-k)}.(t), convf(unitno).*yvals(:, inds), plotline{k}, 'LineWidth', 1); 
             hold on; grid on;
             xlabel('Time [s]'); ylabel(strcat(str,', Y',' [',unitstr{unitno},']'));
             title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', Y'));
