@@ -655,8 +655,8 @@ fig_hdl = handles.figure1;
             'Units', 'characters', ...
             'Position', ppinv.*[3.2 24.4 50 1.5], ...
             'BackgroundColor', [1 1 1], ...
-            'Visible', 'off', ...
-            'String', 'Acceleration @ Depth');
+            'Visible', 'on', ...
+            'String', 'Amplification @ Depth');
         
         handles.ppdata1 = uicontrol( ...
             'Parent', handles.PANELLEFT, ...
@@ -705,6 +705,16 @@ fig_hdl = handles.figure1;
             'BackgroundColor', [1 1 1], ...
             'String', 'Strain Rate');
         
+        handles.ppdata5 = uicontrol( ...
+            'Parent', handles.PANELLEFT, ...
+            'Tag', 'ppdata5', ...
+            'Style', 'checkbox', ...
+            'Units', 'characters', ...
+            'Position', ppinv.*[3 10.1 50 1.5], ...
+            'BackgroundColor', [1 1 1], ...
+            'Visible', 'off', ...
+            'String', 'Amplification @ Depth');
+        
         handles.hdata1 = uicontrol( ...
             'Parent', handles.PANELLEFT, ...
             'Tag', 'hdata1', ...
@@ -720,7 +730,7 @@ fig_hdl = handles.figure1;
             'Tag', 'oneplot', ...
             'Style', 'checkbox', ...
             'Units', 'characters', ...
-            'Position', ppinv.*[2.8 5.5 50 1.5], ...
+            'Position', ppinv.*[2.8 1 50 1.5], ...
             'BackgroundColor', [1 1 1], ...
             'String', 'Put All Results on One Plot');
         
@@ -1051,6 +1061,16 @@ fig_hdl = handles.figure1;
             'Style', 'listbox', ...
             'Units', 'characters', ...
             'Position', ppinv.*[6.6 20.2 25 4], ...
+            'BackgroundColor', [1 1 1], ...
+            'Visible', 'on', ...
+            'String', 'Select directory...');
+        
+        handles.ppbox = uicontrol( ...
+            'Parent', handles.PANELLEFT, ...
+            'Tag', 'ppbox', ...
+            'Style', 'listbox', ...
+            'Units', 'characters', ...
+            'Position', ppinv.*[6.6 6 25 4], ...
             'BackgroundColor', [1 1 1], ...
             'Visible', 'off', ...
             'String', 'Select directory...');
@@ -1441,7 +1461,10 @@ fig_hdl = handles.figure1;
         set(handles.outcropfolder,'str',datafile);
         
         % Update listboxes for available depths and layers
-        
+        layer_cellstr = findLayers(datafile);
+        num_layers = numel(layer_cellstr);
+        set(handles.rsabox, 'str', layer_cellstr, 'max', num_layers);
+        set(handles.ppbox, 'str', layer_cellstr, 'max', num_layers);
     end
 
 %% ---------------------------------------------------------------------------
@@ -1488,7 +1511,12 @@ fig_hdl = handles.figure1;
         
         % Process data
         if ~exist(fullfile(directorystr,'zPROCESSED_DATA.mat'),'file'); % Create data structures if does not exist yet
-            [NDAT, SDAT, nprofile, ncase] = processData(directorystr,E,outcrop,outcropfolder);
+            if get(handles.rsdata6,'Value') || get(handles.ppdata5, 'Value')
+                lay_requested = unique(cat(2, get(handles.rsabox,'Value'), get(handles.ppbox,'Value')));
+            else
+                lay_requested = [];
+            end
+            [NDAT, SDAT, nprofile, ncase] = processData(directorystr,E,outcrop,outcropfolder,lay_requested);
         else
             tic;
             disp('Loading data that has already been processed..');
@@ -1565,12 +1593,18 @@ fig_hdl = handles.figure1;
             convtoSI = 1;
         end
         
+        if get(handles.rsdata6,'Value') || get(handles.ppdata5, 'Value')
+            lay_requested = unique(cat(2, get(handles.rsabox,'Value'), get(handles.ppbox,'Value')));
+        else
+            lay_requested = [];
+        end
+        
         % RS
         
         % RS 1
         if get(handles.rsdata1,'Value')
             
-            plot_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI, oneplot);
+            plot_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI, oneplot, 0, lay_requested);
             
         end
         
@@ -1578,7 +1612,7 @@ fig_hdl = handles.figure1;
         % RS 2
         if get(handles.rsdata2,'Value')
             
-            plot_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI, oneplot);
+            plot_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI, oneplot, 0, lay_requested);
             
         end
         
@@ -1587,7 +1621,7 @@ fig_hdl = handles.figure1;
         if get(handles.rsdata3,'Value') % TEMP - No outcrop yet
             
             if isfield(NDAT{1,1},'outx')
-                plot_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI, oneplot);
+                plot_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI, oneplot, 0, lay_requested);
             else
                 warning('myfun:fdne','Skipping bedrock (outcrop) response spectrum because do not have outcrop information');
             end
@@ -1597,11 +1631,16 @@ fig_hdl = handles.figure1;
         % RS 4
         if get(handles.rsdata4,'Value')
             if outcrop
-                plot_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification (Outcrop)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot);
+                plot_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification (Outcrop)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested);
             else
-                plot_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot);
+                plot_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested);
             end
             
+        end
+        
+        % RS 6
+        if get(handles.rsdata6,'Value')
+            plot_responseSpectrum(NDAT, 'SA_layx', 'SA_layy', E, unitstr, 1, eqname,'Spectral Amplification', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 1, lay_requested);      
         end
         
         

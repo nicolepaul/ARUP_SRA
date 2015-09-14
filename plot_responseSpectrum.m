@@ -1,4 +1,4 @@
-function plot_responseSpectrum(NDAT, x, y, E, unitstr, conv_val, eqname, str, ystr, nprofile, ncase, rs_bool, rec_bool, directorystr, rec_type, convtoSI, oneplot)
+function plot_responseSpectrum(NDAT, x, y, E, unitstr, conv_val, eqname, str, ystr, nprofile, ncase, rs_bool, rec_bool, directorystr, rec_type, convtoSI, oneplot, zplot, lay_requested)
 
 % Checking damping
 if E ~= NDAT{1,1}.E
@@ -23,7 +23,7 @@ rval = linspace(0.2, 1, neq);
 set(0,'units','pixels')
 Pix_SS = get(0,'screensize');
 % Adjust display to these dimensions
-xmult = Pix_SS(3)/1920; % originally was on 1280x800 display, so need to adjust for current size NOTE: may not work well for displays smaller than a 13" Macbook w/o retina display
+xmult = Pix_SS(3)/1920;
 ymult = Pix_SS(4)/1080;
 ppinv = [1*xmult 1*ymult 1*xmult 1*ymult];
 
@@ -54,105 +54,150 @@ p = numSubplots(nprofile);
 p2 = numSubplots(ncase);
 
 if ~oneplot
-    % Plotting individual response spectra
-    for i = 1:neq
-        
-        % Generating figures
-        
-        % X-Direction
-        figure;
-        for j = 1:nprofile
-            subplot(p(1), p(2), j);
-            for k = 1:ncase
-                plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
-                grid on; hold on;
-                xlabel('Period [s]'); ylabel(ystr);
-                title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', X'));
-            end
-            % Add recorded plots if requested
-            if rec_bool
-                % Surface Acceleration
-                if rec_type == 1
-                    
-                    [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
-                    num_rec = size(RS_rec,2);
-                    shade = [0 0.4 0.8];
-                    for m = 1:num_rec
-                        plot(RS_rec{i,m}(:,1), conv_val*RS_rec{i,m}(:,2), '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
-                    end
-                    % Spectral Amplificaiton
-                elseif rec_type == 4
-                    
-                    [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
-                    num_rec = size(RS_rec,2);
-                    shade = [0 0.4 0.8];
-                    
-                    for m = 1:num_rec
-                        RS = interp1(RS_rec{i,m}(:,1), RS_rec{i,m}(:,2), NDAT{i,1}.T)';
-                        if isfield(NDAT{i,1},'outx')
-                            SA = RS ./ NDAT{i,1}.outx;
-                        else
-                            SA = RS ./ NDAT{i,1}.RS_x;
-                        end
-                        plot(NDAT{i,1}.T, SA, '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
-                    end
-                    
-                    
+    if ~zplot
+        % Plotting individual response spectra
+        for i = 1:neq
+
+            % Generating figures
+
+            % X-Direction
+            figure;
+            for j = 1:nprofile
+                subplot(p(1), p(2), j);
+                for k = 1:ncase
+                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
+                    grid on; hold on;
+                    xlabel('Period [s]'); ylabel(ystr);
+                    title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', X'));
                 end
+                % Add recorded plots if requested
+                if rec_bool
+                    % Surface Acceleration
+                    if rec_type == 1
+
+                        [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
+                        num_rec = size(RS_rec,2);
+                        shade = [0 0.4 0.8];
+                        for m = 1:num_rec
+                            plot(RS_rec{i,m}(:,1), conv_val*RS_rec{i,m}(:,2), '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
+                        end
+                        % Spectral Amplificaiton
+                    elseif rec_type == 4
+
+                        [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
+                        num_rec = size(RS_rec,2);
+                        shade = [0 0.4 0.8];
+
+                        for m = 1:num_rec
+                            RS = interp1(RS_rec{i,m}(:,1), RS_rec{i,m}(:,2), NDAT{i,1}.T)';
+                            if isfield(NDAT{i,1},'outx')
+                                SA = RS ./ NDAT{i,1}.outx;
+                            else
+                                SA = RS ./ NDAT{i,1}.RS_x;
+                            end
+                            plot(NDAT{i,1}.T, SA, '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
+                        end
+
+
+                    end
+                end
+                legend('-dynamicLegend','Location','NorthEast');
+                hold off;
             end
-            legend('-dynamicLegend','Location','NorthEast');
-            hold off;
+            set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+            linkaxes; tightfig;
+
+            % Y-Direction
+            figure;
+            for j = 1:nprofile
+                subplot(p(1), p(2), j);
+                for k = 1:ncase
+                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
+                    grid on; hold on;
+                    xlabel('Period [s]'); ylabel(ystr);
+                    title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', Y'));
+                end
+                % Add recorded plots if requested
+                if rec_bool
+                    % Surface Acceleration
+                    if rec_type == 1
+
+                        [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
+                        num_rec = size(RS_rec,2);
+                        shade = [0 0.4 0.8];
+                        for m = 1:num_rec
+                            plot(RS_rec{i,m}(:,1), conv_val*RS_rec{i,m}(:,3), '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
+                        end
+                        % Spectral Amplificaiton
+                    elseif rec_type == 4
+
+                        [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
+                        num_rec = size(RS_rec,2);
+                        shade = [0 0.4 0.8];
+
+                        for m = 1:num_rec
+                            RS = interp1(RS_rec{i,m}(:,1), RS_rec{i,m}(:,3), NDAT{i,1}.T)';
+                            if isfield(NDAT{i,1},'outy')
+                                SA = RS ./ NDAT{i,1}.outy;
+                            else
+                                SA = RS ./ NDAT{i,1}.RS_y;
+                            end
+                            plot(NDAT{i,1}.T, SA, '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
+                        end
+
+
+                    end
+                end
+
+                legend('-dynamicLegend','Location','NorthEast');
+                hold off;
+            end
+            set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+            linkaxes; tightfig;
+
         end
-        set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
-        linkaxes; tightfig;
-        
-        % Y-Direction
-        figure;
-        for j = 1:nprofile
-            subplot(p(1), p(2), j);
-            for k = 1:ncase
-                plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
-                grid on; hold on;
-                xlabel('Period [s]'); ylabel(ystr);
-                title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', Y'));
-            end
-            % Add recorded plots if requested
-            if rec_bool
-                % Surface Acceleration
-                if rec_type == 1
-                    
-                    [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
-                    num_rec = size(RS_rec,2);
-                    shade = [0 0.4 0.8];
-                    for m = 1:num_rec
-                        plot(RS_rec{i,m}(:,1), conv_val*RS_rec{i,m}(:,3), '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
-                    end
-                    % Spectral Amplificaiton
-                elseif rec_type == 4
-                    
-                    [RS_rec,name_rec]=processRecorded(directorystr, convtoSI);
-                    num_rec = size(RS_rec,2);
-                    shade = [0 0.4 0.8];
-                    
-                    for m = 1:num_rec
-                        RS = interp1(RS_rec{i,m}(:,1), RS_rec{i,m}(:,3), NDAT{i,1}.T)';
-                        if isfield(NDAT{i,1},'outy')
-                            SA = RS ./ NDAT{i,1}.outy;
-                        else
-                            SA = RS ./ NDAT{i,1}.RS_y;
-                        end
-                        plot(NDAT{i,1}.T, SA, '--', 'Color', [1 1 1]*shade(m), 'LineWidth', 2, 'DisplayName', name_rec{i,m});
-                    end
-                    
-                    
+    else
+        % If plotting layers
+        % Plotting individual response spectra
+        for i = 1:neq
+
+            % Generating figures
+
+            % X-Direction
+            figure;
+            for j = 1:nprofile
+                subplot(p(1), p(2), j);
+                for k = 1:ncase
+                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x)(:,lay_requested), 'LineWidth', 1.5);
+                    grid on; hold on;
+                    xlabel('Period [s]'); ylabel(ystr);
+                    title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', X'));
                 end
+                legend(NDAT{i,ncase*j-(ncase-k)}.SA_layno{lay_requested},'Location','NorthEast');
+                hold off;               
             end
             
-            legend('-dynamicLegend','Location','NorthEast');
-            hold off;
+            set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+            linkaxes; tightfig;
+
+            % Y-Direction
+            figure;
+            for j = 1:nprofile
+                subplot(p(1), p(2), j);
+                for k = 1:ncase
+                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y)(:,lay_requested), 'LineWidth', 1.5);
+                    grid on; hold on;
+                    xlabel('Period [s]'); ylabel(ystr);
+                    title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', Y'));
+                end
+
+                legend(NDAT{i,ncase*j-(ncase-k)}.SA_layno{lay_requested},'Location','NorthEast');
+                hold off;
+            end
+            set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+            linkaxes; tightfig;
+
         end
-        set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
-        linkaxes; tightfig;
         
     end
     

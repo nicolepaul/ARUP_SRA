@@ -1,4 +1,4 @@
-function [NDAT, SDAT, nprofile, ncase] = processData(directorystr, E, outcrop, outcropfolder)
+function [NDAT, SDAT, nprofile, ncase] = processData(directorystr, E, outcrop, outcropfolder, lay_requested)
 tic
 % Creating list of folders and files
 FileList = dir(directorystr);
@@ -90,6 +90,7 @@ for i = 1:nfolders
         NDAT{i,j}.SA_y = NDAT{i,j}.RSy./NDAT{i,j}.RS_y;
         
         
+        
         %Outcrop if available
         if outcrop
             NDAT{i,j}.outx = getPSA(fn, dtx(i), outx{i}./G, E, G);
@@ -103,6 +104,25 @@ for i = 1:nfolders
             NDAT{i,j}.outtx = outtx{i};
             NDAT{i,j}.outty = outty{i};
         end
+        
+        if ~isempty(lay_requested)
+            
+            NDAT{i,j}.SA_layx = NaN(numel(fn), numel(lay_requested));
+            NDAT{i,j}.SA_layy = NaN(numel(fn), numel(lay_requested));
+            NDAT{i,j}.SA_layno = cell(1, numel(lay_requested));
+            for k = 1:numel(lay_requested)
+                disp(['Determining response spectrum for damping of ' num2str(E) ' (Layer ' num2str(lay_requested(k)) ')']);
+                NDAT{i,j}.SA_layno{k} = strcat('Z = ',num2str(NDAT{i,j}.z(lay_requested(k))));
+                if outcrop
+                    NDAT{i,j}.SA_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,lay_requested(k))./G, E, G)./NDAT{i,j}.outx;
+                    NDAT{i,j}.SA_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,lay_requested(k))./G, E, G)./NDAT{i,j}.outy;
+                else
+                    NDAT{i,j}.SA_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,lay_requested(k))./G, E, G)./NDAT{i,j}.RS_x;
+                    NDAT{i,j}.SA_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,lay_requested(k))./G, E, G)./NDAT{i,j}.RS_y;
+                end
+            end
+        end
+        
         
         NDAT{i,j}.E = E;
         NDAT{i,j}.T = T_range;
