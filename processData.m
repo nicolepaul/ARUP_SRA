@@ -105,22 +105,25 @@ for i = 1:nfolders
             NDAT{i,j}.outty = outty{i};
         end
         
-        if ~isempty(lay_requested)
-            
-            NDAT{i,j}.SA_layx = NaN(numel(fn), numel(lay_requested));
+        lay_requested = 1:numel(NDAT{i,j}.z);
+        NDAT{i,j}.SA_layx = NaN(numel(fn), numel(lay_requested));
             NDAT{i,j}.SA_layy = NaN(numel(fn), numel(lay_requested));
             NDAT{i,j}.SA_layno = cell(1, numel(lay_requested));
-            for k = 1:numel(lay_requested)
+        for k = lay_requested
+%         if ~isempty(lay_requested)
+            
+            
+%             for k = 1:numel(lay_requested)
                 disp(['Determining response spectrum for damping of ' num2str(E) ' (Layer ' num2str(lay_requested(k)) ')']);
-                NDAT{i,j}.SA_layno{k} = strcat('Z = ',num2str(NDAT{i,j}.z(lay_requested(k))));
+                NDAT{i,j}.SA_layno{k} = strcat('Z = ',num2str(NDAT{i,j}.z(k)));
                 if outcrop
-                    NDAT{i,j}.SA_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,lay_requested(k))./G, E, G)./NDAT{i,j}.outx;
-                    NDAT{i,j}.SA_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,lay_requested(k))./G, E, G)./NDAT{i,j}.outy;
+                    NDAT{i,j}.SA_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,k)./G, E, G)./NDAT{i,j}.outx;
+                    NDAT{i,j}.SA_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,k)./G, E, G)./NDAT{i,j}.outy;
                 else
-                    NDAT{i,j}.SA_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,lay_requested(k))./G, E, G)./NDAT{i,j}.RS_x;
-                    NDAT{i,j}.SA_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,lay_requested(k))./G, E, G)./NDAT{i,j}.RS_y;
+                    NDAT{i,j}.SA_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,k)./G, E, G)./NDAT{i,j}.RS_x;
+                    NDAT{i,j}.SA_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,k)./G, E, G)./NDAT{i,j}.RS_y;
                 end
-            end
+%             end
         end
         
         
