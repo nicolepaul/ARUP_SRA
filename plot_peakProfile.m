@@ -3,7 +3,14 @@ function plot_peakProfile(SDAT, x, y, eqname, str, unitno, convf, unitstr, nprof
 defaultFigureProperties;
 
 
-plotline = {'b','m','g','r','c','y'};
+% plotline = {'b','m','g','r','c','y'};
+plotline = {[0 0.4470 0.7410], ...
+    [0.8500    0.3250    0.0980],...
+    [0.9290    0.6940    0.1250],...
+    [0.4940    0.1840    0.5560],...
+    [0.4660    0.6740    0.1880],...
+    [0.3010    0.7450    0.9330],...
+    [0.6350    0.0780    0.1840]};
 % plotline = {'r','m','k','g','c','b'};
 % plotline = {'k', 'b','r'};
 bval = 0.8;
@@ -46,7 +53,7 @@ if ~oneplot
             legendstr = cell(ncase,1);
             for k = 1:ncase
                 [~,sortinds] = sort(SDAT{i,ncase*j-(ncase-k)}.z);
-                plot(peak_x{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds), plotline{k}, 'LineWidth', 1);
+                plot(peak_x{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds),'Color', plotline{k}, 'LineWidth', 1);
                 grid on; hold on;
                 xlabel(strcat(str, ', YZ',' [',unitstr{unitno},']'));
                 ylabel('Depth [m]');
@@ -67,7 +74,7 @@ if ~oneplot
             legendstr = cell(ncase,1);
             for k = 1:ncase
                 [~,sortinds] = sort(SDAT{i,ncase*j-(ncase-k)}.z);
-                plot(peak_y{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds), plotline{k}, 'LineWidth', 1);
+                plot(peak_y{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds),'Color', plotline{k}, 'LineWidth', 1);
                 grid on; hold on;
                 xlabel(strcat(str, ', ZX',' [',unitstr{unitno},']'));
                 ylabel('Depth [m]');

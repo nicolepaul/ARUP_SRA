@@ -12,7 +12,14 @@ neq = size(NDAT,1);
 
 % Figure, axes, line properties
 defaultFigureProperties;
-plotline = {'b','m','g','r','c','y'};
+% plotline = {'b','m','g','r','c','y'};
+plotline = {[0 0.4470 0.7410], ...
+    [0.8500    0.3250    0.0980],...
+    [0.9290    0.6940    0.1250],...
+    [0.4940    0.1840    0.5560],...
+    [0.4660    0.6740    0.1880],...
+    [0.3010    0.7450    0.9330],...
+    [0.6350    0.0780    0.1840]};
 % plotline = {'r','m','k','g','c','b'};
 % plotline = {'k', 'b','r'};
 bval = 0.8;
@@ -65,7 +72,7 @@ if ~oneplot
             for j = 1:nprofile
                 subplot(p(1), p(2), j);
                 for k = 1:ncase
-                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
+                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(x),'Color', plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
                     grid on; hold on;
                     xlabel('Period [s]'); ylabel(ystr);
                     title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', X'));
@@ -112,7 +119,7 @@ if ~oneplot
             for j = 1:nprofile
                 subplot(p(1), p(2), j);
                 for k = 1:ncase
-                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
+                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y),'Color', plotline{k}, 'LineWidth', 1.5, 'DisplayName', NDAT{i,ncase*j-(ncase-k)}.case);
                     grid on; hold on;
                     xlabel('Period [s]'); ylabel(ystr);
                     title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', Y'));

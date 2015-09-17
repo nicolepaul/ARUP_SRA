@@ -15,7 +15,14 @@ function plot_timeHistory(NDAT, t, x, y, eqname, str, unitno, convf, unitstr, su
 % - ncase: Number of cases (to appear on same plot)
 
 defaultFigureProperties;
-plotline = {'b','m','g','r','c','y'};
+% plotline = {'b','m','g','r','c','y'};
+plotline = {[0 0.4470 0.7410], ...
+    [0.8500    0.3250    0.0980],...
+    [0.9290    0.6940    0.1250],...
+    [0.4940    0.1840    0.5560],...
+    [0.4660    0.6740    0.1880],...
+    [0.3010    0.7450    0.9330],...
+    [0.6350    0.0780    0.1840]};
 
 % Get size of screen in pixels
 set(0,'units','pixels')
@@ -47,7 +54,7 @@ for i = 1:n_eq
                     inds = NDAT{i,ncase*j-(ncase-k)}.bedid';
                 end
             end
-            plot(NDAT{i,ncase*j-(ncase-k)}.(t), convf(unitno).*yvals(:, inds), plotline{k}, 'LineWidth', 1); 
+            plot(NDAT{i,ncase*j-(ncase-k)}.(t), convf(unitno).*yvals(:, inds),'Color', plotline{k}, 'LineWidth', 1); 
             hold on; grid on;
             xlabel('Time [s]'); ylabel(strcat(str,', X',' [',unitstr{unitno},']'));
             title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', X'));
@@ -79,7 +86,7 @@ for i = 1:n_eq
                     inds = NDAT{i,ncase*j-(ncase-k)}.bedid';
                 end
             end
-            plot(NDAT{i,ncase*j-(ncase-k)}.(t), convf(unitno).*yvals(:, inds), plotline{k}, 'LineWidth', 1); 
+            plot(NDAT{i,ncase*j-(ncase-k)}.(t), convf(unitno).*yvals(:, inds),'Color', plotline{k}, 'LineWidth', 1); 
             hold on; grid on;
             xlabel('Time [s]'); ylabel(strcat(str,', Y',' [',unitstr{unitno},']'));
             title(strcat(eqname{i},':  ',NDAT{i,j*ncase}.profile,'  -  ',str,', Y'));
