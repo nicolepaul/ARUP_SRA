@@ -1,4 +1,4 @@
-function [NDAT, SDAT, nprofile, ncase] = processData(directorystr, E, outcrop, outcropfolder, lay_requested)
+function [NDAT, SDAT, nprofile, ncase] = processData(directorystr, E, outcrop, outcropfolder)
 tic
 % Creating list of folders and files
 FileList = dir(directorystr);
@@ -82,6 +82,10 @@ for i = 1:nfolders
         % Surface   
         NDAT{i,j}.RSx = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,NDAT{i,j}.surfid)./G, E, G);
         NDAT{i,j}.RSy = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,NDAT{i,j}.surfid)./G, E, G);
+        
+        NDAT{i,j}.Sdx = NDAT{i,j}.RSx./(2*pi.*fn').^2;
+        NDAT{i,j}.Sdy = NDAT{i,j}.RSy./(2*pi.*fn').^2;
+        
         % Infield
         NDAT{i,j}.RS_x = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,NDAT{i,j}.bedid)./G, E, G);
         NDAT{i,j}.RS_y = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,NDAT{i,j}.bedid)./G, E, G);
@@ -164,7 +168,6 @@ for i = 1:nfolders
         if exist(fullfile(foldername,strcat('VertStress_',names_sset{j},'.csv')),'file')
             vertdata = csvread(fullfile(foldername,strcat('VertStress_',names_sset{j},'.csv')), 0, 0);
             vertstress = interp1(vertdata(:,1),vertdata(:,2),SDAT{i,j}.z);
-
             SDAT{i,j}.csryz = SDAT{i,j}.sigyz./repmat(vertstress',numel(SDAT{i,j}.t),1);
             SDAT{i,j}.csrzx = SDAT{i,j}.sigzx./repmat(vertstress',numel(SDAT{i,j}.t),1);
         end

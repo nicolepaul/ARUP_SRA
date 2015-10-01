@@ -53,14 +53,15 @@ if ~oneplot
             legendstr = cell(ncase,1);
             for k = 1:ncase
                 [~,sortinds] = sort(SDAT{i,ncase*j-(ncase-k)}.z);
-                plot(peak_x{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds),'Color', plotline{k}, 'LineWidth', 1);
+                plot(peak_x{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds),'Color', plotline{k}, 'LineWidth', 1, 'DisplayName', SDAT{i,ncase*j-(ncase-k)}.case);
                 grid on; hold on;
                 xlabel(strcat(str, ', YZ',' [',unitstr{unitno},']'));
                 ylabel('Depth [m]');
-                legendstr{k} = SDAT{i,ncase*j-(ncase-k)}.case;
+%                 legendstr{k} = SDAT{i,ncase*j-(ncase-k)}.case;
                 title(strcat(eqname{i},':  ',SDAT{i,j*ncase}.profile,' ', '-',' ',str,' Profile, YZ'));
             end
-            legend(legendstr,'Location','SouthEast');
+%             legend(legendstr,'Location','SouthEast');
+            legend('-dynamicLegend','Location','SouthEast');
             hold off
         end
         set(gcf, 'Position', ppinv.*[50 50 250*nprofile 600]);
@@ -74,14 +75,15 @@ if ~oneplot
             legendstr = cell(ncase,1);
             for k = 1:ncase
                 [~,sortinds] = sort(SDAT{i,ncase*j-(ncase-k)}.z);
-                plot(peak_y{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds),'Color', plotline{k}, 'LineWidth', 1);
+                plot(peak_y{i,ncase*j-(ncase-k)}(sortinds)*convf(unitno), SDAT{i,ncase*j-(ncase-k)}.z(sortinds),'Color', plotline{k}, 'LineWidth', 1, 'DisplayName', SDAT{i,ncase*j-(ncase-k)}.case);
                 grid on; hold on;
                 xlabel(strcat(str, ', ZX',' [',unitstr{unitno},']'));
                 ylabel('Depth [m]');
-                legendstr{k} = SDAT{i,ncase*j-(ncase-k)}.case;
+%                 legendstr{k} = SDAT{i,ncase*j-(ncase-k)}.case;
                 title(strcat(eqname{i},':  ',SDAT{i,j*ncase}.profile,' ', '-',' ',str,' Profile, ZX'));
             end
-            legend(legendstr,'Location','SouthEast');
+%             legend(legendstr,'Location','SouthEast');
+            legend('-dynamicLegend','Location','SouthEast');
             hold off
         end
         set(gcf, 'Position', ppinv.*[50 50 250*nprofile 600]);

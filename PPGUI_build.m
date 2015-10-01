@@ -1540,7 +1540,7 @@ fig_hdl = handles.figure1;
             else
                 lay_requested = [];
             end
-            [NDAT, SDAT, nprofile, ncase] = processData(directorystr,E,outcrop,outcropfolder,lay_requested);
+            [NDAT, SDAT, nprofile, ncase] = processData(directorystr,E,outcrop,outcropfolder);
         else
             tic;
             disp('Loading data that has already been processed..');
@@ -1659,6 +1659,13 @@ fig_hdl = handles.figure1;
             else
                 plot_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested);
             end
+            
+        end
+        
+        % RS 5
+        if get(handles.rsdata5,'Value')
+            
+            plot_responseSpectrum(NDAT, 'Sdx', 'Sdy', E, unitstr, convf(3), eqname,'Surface Displacement Response Spectrum', strcat('Spectral Displacement [',unitstr{3},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 3, convtoSI, oneplot, 0, lay_requested);
             
         end
         
