@@ -111,7 +111,7 @@ if ~oneplot
                 legend('-dynamicLegend','Location','NorthEast');
                 hold off;
             end
-            set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+            set(gcf,'Position',ppinv.*[50 50 400*p(2) 450*p(1)]);
             linkaxes; tightfig;
 
             % Y-Direction
@@ -159,7 +159,7 @@ if ~oneplot
                 legend('-dynamicLegend','Location','NorthEast');
                 hold off;
             end
-            set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+            set(gcf,'Position',ppinv.*[50 50 400*p(2) 450*p(1)]);
             linkaxes; tightfig;
 
         end
@@ -184,7 +184,7 @@ if ~oneplot
                 hold off;               
             end
             
-            set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+            set(gcf,'Position',ppinv.*[50 50 400*p(2) 450*p(1)]);
             linkaxes; tightfig;
 
             % Y-Direction
@@ -201,7 +201,7 @@ if ~oneplot
                 legend(NDAT{i,ncase*j-(ncase-k)}.SA_layno{lay_requested},'Location','NorthEast');
                 hold off;
             end
-            set(gcf,'Position',ppinv.*[50 50 400*p(1) 450*p(2)]);
+            set(gcf,'Position',ppinv.*[50 50 400*p(2) 450*p(1)]);
             linkaxes; tightfig;
 
         end
@@ -222,7 +222,7 @@ else
             for i = 1:neq
                 % X-Direction
                 xarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(x)];
-                plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), plotline{i}, 'DisplayName', eqname{i}, 'LineWidth', 1.5); hold on;
+                plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(x), 'Color', plotline{i}, 'DisplayName', eqname{i}, 'LineWidth', 1.5); hold on;
                 legend('-DynamicLegend','Location','NorthEast');
             end
             grid on; xlabel('Period [s]'); ylabel(ystr);
@@ -230,7 +230,7 @@ else
             
             
         end
-        set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+        set(gcf,'Position',ppinv.*[50 50 400*p2(2) 400*p2(1)]);
         linkaxes; tightfig;
     end
     
@@ -245,7 +245,7 @@ else
             for i = 1:neq
                 % Y-Direction
                 yarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(y)];
-                plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), plotline{i}, 'DisplayName', eqname{i}, 'LineWidth', 1.5); hold on;
+                plot(NDAT{i,ncase*j-(ncase-k)}.T, tfact*conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), 'Color', plotline{i}, 'DisplayName', eqname{i}, 'LineWidth', 1.5); hold on;
                 legend('-DynamicLegend','Location','NorthEast');
             end
             grid on; xlabel('Period [s]'); ylabel(ystr);
@@ -253,7 +253,7 @@ else
             
         end
         
-        set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+        set(gcf,'Position',ppinv.*[50 50 400*p2(2) 400*p2(1)]);
         linkaxes; tightfig;
     end
 end
@@ -304,7 +304,7 @@ if any(rs_bool(1:4))
                 plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*(RSmean-calc_rsstd*RSstd), 'k--', 'LineWidth', 2, 'DisplayName', strcat('Mean - ', num2str(calc_rsstd),' ' , 'Std.'));
             end
         end
-        set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+        set(gcf,'Position',ppinv.*[50 50 400*p2(2) 400*p2(1)]);
         linkaxes; tightfig;
     end
     
@@ -346,7 +346,7 @@ if any(rs_bool(1:4))
             end
         end
         
-        set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+        set(gcf,'Position',ppinv.*[50 50 400*p2(2) 400*p2(1)]);
         linkaxes; tightfig;
     end
     
@@ -388,7 +388,7 @@ if strcmpi(x,'RSx') && rs_bool(4)
             end
         end
         
-        set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+        set(gcf,'Position',ppinv.*[50 50 400*p2(2) 400*p2(1)]);
         linkaxes; tightfig;
     end
 end
@@ -423,7 +423,7 @@ if rs_bool(6)
             
         end
         
-        set(gcf,'Position',ppinv.*[50 50 400*p2(1) 400*p2(2)]);
+        set(gcf,'Position',ppinv.*[50 50 400*p2(2) 400*p2(1)]);
         linkaxes; tightfig;
     end
 end
