@@ -1600,6 +1600,7 @@ fig_hdl = handles.figure1;
         %% RESPONSE SPECTRUM DATA
         
         % Find necessary calculations
+%         ncase=1; % TEMP
         calc_rs1 = get(handles.rsmean, 'Value');
         calc_rs2 = get(handles.rsmax, 'Value');
         calc_rs3 = get(handles.rsmeanstd, 'Value');
