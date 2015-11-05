@@ -319,7 +319,7 @@ if any(rs_bool(1:4))
                 yarray = [];
                 for i = 1:neq
                     % Y-Direction
-                    yarray = [xarray NDAT{i,ncase*j-(ncase-k)}.(y)];
+                    yarray = [yarray NDAT{i,ncase*j-(ncase-k)}.(y)];
                     plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
                     legend('-DynamicLegend');
                 end
