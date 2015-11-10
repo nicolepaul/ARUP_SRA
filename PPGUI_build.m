@@ -490,7 +490,7 @@ fig_hdl = handles.figure1;
             'Units', 'characters', ...
             'Position', ppinv.*[54.8 2.7 19 1.8], ...
             'BackgroundColor', [1 1 1], ...
-            'String', 'Generate CSVs', ...
+            'String', 'Generate XLS', ...
             'Callback', @generatecsv_Callback);
         
         handles.generatemat = uicontrol( ...
@@ -500,7 +500,7 @@ fig_hdl = handles.figure1;
             'Units', 'characters', ...
             'Position', ppinv.*[76.8 2.7 19 1.8], ...
             'BackgroundColor', [1 1 1], ...
-            'String', 'Generate MATs', ...
+            'String', 'Generate MAT', ...
             'Callback', @generatemat_Callback);
         
         handles.loadpresets = uicontrol( ...
@@ -1721,6 +1721,192 @@ fig_hdl = handles.figure1;
 
 %% ---------------------------------------------------------------------------
     function generatecsv_Callback(hObject,evendata) %#ok<INUSD>
+        
+         % Handle inputs
+        [convf, unitstr] = handleinputs;
+        directorystr = get(handles.directorystr, 'str');
+        E = str2double(get(handles.rsdamping,'str'));
+        outcrop = get(handles.outcrop, 'Value');
+        outcropfolder = get(handles.outcropfolder,'str');
+        oneplot = get(handles.oneplot, 'Value');
+        
+        % Process data
+        if ~exist(fullfile(directorystr,'zPROCESSED_DATA.mat'),'file'); % Create data structures if does not exist yet
+            if get(handles.rsdata6,'Value') || get(handles.ppdata5, 'Value')
+                lay_requested = unique(cat(2, get(handles.rsabox,'Value'), get(handles.ppbox,'Value')));
+            else
+                lay_requested = [];
+            end
+            [NDAT, SDAT, nprofile, ncase] = processData(directorystr,E,outcrop,outcropfolder);
+        else
+            tic;
+            disp('Loading data that has already been processed..');
+            load(fullfile(directorystr,'zPROCESSED_DATA.mat')); % Load data structures if already exists
+            disp('Data has fully loaded');
+            toc;
+        end
+        
+         % Setting count of folders
+        nfolders = str2double(get(handles.nfolders,'str'));
+        
+        % Getting folder ("earthquake") names
+        eqname = cell(nfolders,1);
+        for i = 1:nfolders
+            fieldi = strcat('f',num2str(i),'name');
+            eqname{i} = get(handles.(fieldi),'str');
+        end
+        
+        % Making directory of outputs
+        mkdir('Output',get(handles.analysisname,'str'));
+        dirpath = fullfile('Output',get(handles.analysisname,'str'));
+        
+         %% TIME HISTORY DATA
+        
+        % TH1
+        if get(handles.thdata1,'Value')
+            write_timeHistory(NDAT, 't', 'ax', 'ay', eqname, 'Surface Acceleration', 1, convf, unitstr, 1, nprofile, ncase, dirpath);
+        end
+        
+        % TH 2
+        
+        if get(handles.thdata2,'Value')
+            write_timeHistory(NDAT, 't', 'vx', 'vy', eqname, 'Surface Velocity', 2, convf, unitstr, 1, nprofile, ncase, dirpath);
+        end
+        
+        
+        % TH 3
+        if get(handles.thdata3,'Value')
+            write_timeHistory(NDAT, 't', 'dx','dy', eqname, 'Surface Displacement', 3,  convf, unitstr, 1, nprofile, ncase, dirpath);
+        end
+        
+        % TH 4
+        if get(handles.thdata4,'Value')
+            if isfield(NDAT{1,1},'outx')
+                write_timeHistory(NDAT, 'outtx', 'outax', 'outay', eqname,'Bedrock (Outcrop) Acceleration', 1, convf, unitstr, 0, nprofile, ncase, dirpath);
+            else
+                write_timeHistory(NDAT, 't', 'ax', 'ay', eqname, 'Bedrock (Infield) Acceleration', 1, convf, unitstr, 0, nprofile, ncase, dirpath);
+            end
+        end
+        
+        % TH 5
+        if get(handles.thdata5,'Value')
+            if isfield(NDAT{1,1},'outx')
+                write_timeHistory(NDAT, 'outtx', 'outvx', 'outvy', eqname,'Bedrock (Outcrop) Velocity', 2, convf, unitstr, 0, nprofile, ncase, dirpath);
+            else
+                write_timeHistory(NDAT, 't', 'vx', 'vy', eqname,'Bedrock (Infield) Velocity', 2, convf, unitstr, 0, nprofile, ncase, dirpath);
+            end
+        end
+        
+        
+        %% RESPONSE SPECTRUM DATA
+        
+        % Find necessary calculations
+%         ncase=1; % TEMP
+        calc_rs1 = get(handles.rsmean, 'Value');
+        calc_rs2 = get(handles.rsmax, 'Value');
+        calc_rs3 = get(handles.rsmeanstd, 'Value');
+        calc_rs4 = get(handles.rsmajor, 'Value');
+        calc_rs5 = str2double(get(handles.rsstd, 'str'));
+        calc_rs6 = get(handles.rsmajor, 'Value');
+        rs_bool = [calc_rs1 calc_rs2 calc_rs3 calc_rs4 calc_rs5 calc_rs6];
+        
+        plot_rec1 = get(handles.recsurfa, 'Value');
+        plot_rec2 = get(handles.recspecamp, 'Value');
+        rec_bool = [plot_rec1 plot_rec2];
+        if get(handles.recunits,'Value') == 1
+            convtoSI = 9.81;
+        else
+            convtoSI = 1;
+        end
+        
+        if get(handles.rsdata6,'Value') || get(handles.ppdata5, 'Value')
+            lay_requested = unique(cat(2, get(handles.rsabox,'Value'), get(handles.ppbox,'Value')));
+        else
+            lay_requested = [];
+        end
+        
+        % RS
+        
+        % RS 1
+        if get(handles.rsdata1,'Value')
+            
+            write_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI, oneplot, 0, lay_requested, dirpath);
+            
+        end
+        
+        
+        % RS 2
+        if get(handles.rsdata2,'Value')
+            
+            write_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI, oneplot, 0, lay_requested, dirpath);
+            
+        end
+        
+        
+        % RS 3
+        if get(handles.rsdata3,'Value') % TEMP - No outcrop yet
+            
+            if isfield(NDAT{1,1},'outx')
+                write_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI, oneplot, 0, lay_requested, dirpath);
+            else
+                warning('myfun:fdne','Skipping bedrock (outcrop) response spectrum because do not have outcrop information');
+            end
+            
+        end
+        
+        % RS 4
+        if get(handles.rsdata4,'Value')
+            if outcrop
+                write_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification (Outcrop)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested, dirpath);
+            else
+                write_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested, dirpath);
+            end
+            
+        end
+        
+        % RS 5
+        if get(handles.rsdata5,'Value')
+            
+            write_responseSpectrum(NDAT, 'Sdx', 'Sdy', E, unitstr, convf(3), eqname,'Surface Displacement Response Spectrum', strcat('Spectral Displacement [',unitstr{3},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 3, convtoSI, oneplot, 0, lay_requested, dirpath);
+            
+        end
+        
+        % RS 6
+        if get(handles.rsdata6,'Value')
+            write_responseSpectrum(NDAT, 'SA_layx', 'SA_layy', E, unitstr, 1, eqname,'Spectral Amplification', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 1, lay_requested, dirpath);  
+            write_responseSpectrum(NDAT, 'RS_layx', 'RS_layy', E, unitstr, convf(1), eqname,'Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 1, lay_requested, dirpath);      
+        end
+        
+        
+        %% PEAK PROFILE DATA
+
+        % PP 1
+        if get(handles.ppdata1, 'Value')
+            write_peakProfile(SDAT, 'epsyz', 'epszx', eqname, 'Max Shear Strain', 5, convf, unitstr, nprofile, ncase, dirpath)
+        end
+        
+        % PP 2
+        if get(handles.ppdata2, 'Value')
+            write_peakProfile(SDAT, 'sigyz', 'sigzx', eqname, 'Max Shear Stress', 4, convf, unitstr, nprofile, ncase, dirpath)
+        end
+        
+        % PP 3b
+        if get(handles.ppdata3b, 'Value')
+            if isfield(SDAT{1,1},'csryz')
+                write_peakProfile(SDAT, 'csryz', 'csrzx', eqname, 'Max Cyclic Stress Ratio', 1, 100, {'%'}, nprofile, ncase, dirpath)
+            else
+                warning('myfun:vertsdne','Cyclic stress ratios not calculated.  Check that vertical stresses vs depth are given for each unique solid set.');
+            end
+        end
+        
+        % PP 4
+        if get(handles.ppdata4, 'Value')
+            write_peakProfile(SDAT, 'erateyz', 'eratezx', eqname, 'Max Shear Strain Rate', 1, 1, {'1/s'}, nprofile, ncase, dirpath)
+            
+        end
+        
+        disp('Generation of data files complete');
+        toc;
         
     end
 

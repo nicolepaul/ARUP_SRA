@@ -121,11 +121,15 @@ for i = 1:nfolders
                 disp(['Determining response spectrum for damping of ' num2str(E) ' (Layer ' num2str(lay_requested(k)) ')']);
                 NDAT{i,j}.SA_layno{k} = strcat('Z = ',num2str(NDAT{i,j}.z(k)));
                 if outcrop
-                    NDAT{i,j}.SA_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,k)./G, E, G)./NDAT{i,j}.outx;
-                    NDAT{i,j}.SA_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,k)./G, E, G)./NDAT{i,j}.outy;
+                    NDAT{i,j}.RS_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,k)./G, E, G);
+                    NDAT{i,j}.RS_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,k)./G, E, G);
+                    NDAT{i,j}.SA_layx(:,k) = NDAT{i,j}.RS_layx(:,k)./NDAT{i,j}.outx;
+                    NDAT{i,j}.SA_layy(:,k) = NDAT{i,j}.RS_layy(:,k)./NDAT{i,j}.outy;
                 else
-                    NDAT{i,j}.SA_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,k)./G, E, G)./NDAT{i,j}.RS_x;
-                    NDAT{i,j}.SA_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,k)./G, E, G)./NDAT{i,j}.RS_y;
+                    NDAT{i,j}.RS_layx(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ax(:,k)./G, E, G);
+                    NDAT{i,j}.RS_layy(:,k) = getPSA(fn, data(2,1), NDAT{i,j}.ay(:,k)./G, E, G);
+                    NDAT{i,j}.SA_layx(:,k) = NDAT{i,j}.RS_layx(:,k)./NDAT{i,j}.RS_x;
+                    NDAT{i,j}.SA_layy(:,k) = NDAT{i,j}.RS_layy(:,k)./NDAT{i,j}.RS_y;
                 end
 %             end
         end

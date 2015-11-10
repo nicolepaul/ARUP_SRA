@@ -270,6 +270,7 @@ if any(rs_bool(1:4))
     % X-Direction
     for j = 1:nprofile
         figure;
+     
         for k = 1:ncase
             subplot(p2(1),p2(2),k);
             % Plot all motions on one figure
@@ -285,7 +286,6 @@ if any(rs_bool(1:4))
                 grid on; xlabel('Period [s]'); ylabel(ystr);
                 title(strcat(NDAT{i,j*ncase}.profile,': ',NDAT{i,ncase*j-(ncase-k)}.case,' ','-',' ',str,', X'));
             end
-            
             
             if calc_rsmean
                 RSmean = mean(xarray,2);%mean(RSx(:, ncase*j-(ncase-k), :), 3);
@@ -305,6 +305,7 @@ if any(rs_bool(1:4))
             end
         end
         set(gcf,'Position',ppinv.*[50 50 400*p2(2) 400*p2(1)]);
+        
         linkaxes; tightfig;
     end
     
@@ -317,10 +318,11 @@ if any(rs_bool(1:4))
             if any(rs_bool(1:4))
                 %                 legendstr = cell(neq, 1);
                 yarray = [];
+                
                 for i = 1:neq
                     % Y-Direction
-                    yarray = [yarray NDAT{i,ncase*j-(ncase-k)}.(y)];
-                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i}); hold on;
+                    yarray = [yarray NDAT{i,ncase*j-(ncase-k)}.(x)];
+                    plot(NDAT{i,ncase*j-(ncase-k)}.T, conv_val*NDAT{i,ncase*j-(ncase-k)}.(y), 'Color', [rval(i) gval bval], 'DisplayName', eqname{i});  hold on;
                     legend('-DynamicLegend');
                 end
                 grid on; xlabel('Period [s]'); ylabel(ystr);
@@ -347,6 +349,7 @@ if any(rs_bool(1:4))
         end
         
         set(gcf,'Position',ppinv.*[50 50 400*p2(2) 400*p2(1)]);
+        
         linkaxes; tightfig;
     end
     
