@@ -1831,7 +1831,7 @@ fig_hdl = handles.figure1;
         % RS 1
         if get(handles.rsdata1,'Value')
             
-            write_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI, oneplot, 0, lay_requested, dirpath);
+            write_responseSpectrum(NDAT, 'RSx', 'RSy', E, unitstr, convf(1), eqname,'Surface Response Spectrum', 1, nprofile, ncase, rs_bool, rec_bool(1), directorystr, 1, convtoSI, oneplot, 0, lay_requested, dirpath);
             
         end
         
@@ -1839,7 +1839,7 @@ fig_hdl = handles.figure1;
         % RS 2
         if get(handles.rsdata2,'Value')
             
-            write_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI, oneplot, 0, lay_requested, dirpath);
+            write_responseSpectrum(NDAT, 'RS_x', 'RS_y', E, unitstr, convf(1), eqname,'Bedrock (Infield) Response Spectrum', 1, nprofile, ncase, rs_bool, 0, directorystr, 2, convtoSI, oneplot, 0, lay_requested, dirpath);
             
         end
         
@@ -1848,7 +1848,7 @@ fig_hdl = handles.figure1;
         if get(handles.rsdata3,'Value') % TEMP - No outcrop yet
             
             if isfield(NDAT{1,1},'outx')
-                write_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI, oneplot, 0, lay_requested, dirpath);
+                write_responseSpectrum(NDAT, 'outx', 'outy', E, unitstr, convf(1), eqname,'Bedrock (Outcrop) Response Spectrum', 1, nprofile, ncase, rs_bool, 0, directorystr, 3, convtoSI, oneplot, 0, lay_requested, dirpath);
             else
                 warning('myfun:fdne','Skipping bedrock (outcrop) response spectrum because do not have outcrop information');
             end
@@ -1858,9 +1858,9 @@ fig_hdl = handles.figure1;
         % RS 4
         if get(handles.rsdata4,'Value')
             if outcrop
-                write_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification (Outcrop)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested, dirpath);
+                write_responseSpectrum(NDAT, 'SAx', 'SAy', E, unitstr, 1, eqname,'Spectral Amplification (Outcrop)', 1, nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested, dirpath);
             else
-                write_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested, dirpath);
+                write_responseSpectrum(NDAT, 'SA_x', 'SA_y', E, unitstr, 1, eqname,'Spectral Amplification (Infield)', 1, nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 0, lay_requested, dirpath);
             end
             
         end
@@ -1868,14 +1868,14 @@ fig_hdl = handles.figure1;
         % RS 5
         if get(handles.rsdata5,'Value')
             
-            write_responseSpectrum(NDAT, 'Sdx', 'Sdy', E, unitstr, convf(3), eqname,'Surface Displacement Response Spectrum', strcat('Spectral Displacement [',unitstr{3},']'), nprofile, ncase, rs_bool, rec_bool(1), directorystr, 3, convtoSI, oneplot, 0, lay_requested, dirpath);
+            write_responseSpectrum(NDAT, 'Sdx', 'Sdy', E, unitstr, convf(3), eqname,'Surface Displacement Response Spectrum', 3, nprofile, ncase, rs_bool, rec_bool(1), directorystr, 3, convtoSI, oneplot, 0, lay_requested, dirpath);
             
         end
         
         % RS 6
         if get(handles.rsdata6,'Value')
-            write_responseSpectrum(NDAT, 'SA_layx', 'SA_layy', E, unitstr, 1, eqname,'Spectral Amplification', 'Factor', nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 1, lay_requested, dirpath);  
-            write_responseSpectrum(NDAT, 'RS_layx', 'RS_layy', E, unitstr, convf(1), eqname,'Response Spectrum', strcat('Pseudo-Spectral Acceleration [',unitstr{1},']'), nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 1, lay_requested, dirpath);      
+            write_responseSpectrum(NDAT, 'SA_layx', 'SA_layy', E, unitstr, 1, eqname,'Spectral Amplification', 1, nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 1, lay_requested, dirpath);  
+            write_responseSpectrum(NDAT, 'RS_layx', 'RS_layy', E, unitstr, convf(1), eqname,'Response Spectrum', 1, nprofile, ncase, rs_bool, rec_bool(2), directorystr, 4, convtoSI, oneplot, 1, lay_requested, dirpath);      
         end
         
         
@@ -1942,28 +1942,28 @@ fig_hdl = handles.figure1;
     function [convf, unitstr] = handleinputs
         
         % Unit conversion factors
-        if get(handles.aunits, 'Value')
+        if get(handles.aunits, 'Value') == 1
             aconv = 1/9.81;
             astr = 'g';
         else
             aconv = 1;
             astr = 'm/s^2';
         end
-        if get(handles.vunits, 'Value')
+        if get(handles.vunits, 'Value') == 1
             vconv = 1e2;
             vstr = 'cm/s';
         else
             vconv = 1;
             vstr = 'm/s';
         end
-        if get(handles.dunits, 'Value')
+        if get(handles.dunits, 'Value') == 1
             dconv = 1e2;
             dstr = 'cm';
         else
             dconv = 1;
             dstr = 'm';
         end
-        if get(handles.sigunits, 'Value')
+        if get(handles.sigunits, 'Value') == 1
             sigconv = 1e-3;
             sigstr = 'kPa';
         else

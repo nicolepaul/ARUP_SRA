@@ -1,4 +1,4 @@
-function write_responseSpectrum(NDAT, x, y, E, unitstr, conv_val, eqname, str, ystr, nprofile, ncase, rs_bool, rec_bool, directorystr, rec_type, convtoSI, oneplot, zplot, lay_requested, dirpath)
+function write_responseSpectrum(NDAT, x, y, E, unitstr, conv_val, eqname, str, unitno, nprofile, ncase, rs_bool, rec_bool, directorystr, rec_type, convtoSI, oneplot, zplot, lay_requested, dirpath)
 
 % Checking damping
 if E ~= NDAT{1,1}.E
@@ -25,10 +25,10 @@ if rec_type ~= 4
     for i = 1:n_eq
         if i == 1
             colhead1 = {eqname{i}, eqname{i}, eqname{i}};
-            colhead2 = {'Period [s]', [str ', X [' unitstr{1} ']'], [str ', Y [' unitstr{1} ']']};
+            colhead2 = {'Period [s]', [str ', X [' unitstr{unitno} ']'], [str ', Y [' unitstr{unitno} ']']};
         else
             colhead1 = [colhead1, eqname{i}, eqname{i}, eqname{i}];
-            colhead2 = [colhead2, 'Period [s]', [str ', X [' unitstr{1} ']'], [str ', Y [' unitstr{1} ']']];
+            colhead2 = [colhead2, 'Period [s]', [str ', X [' unitstr{unitno} ']'], [str ', Y [' unitstr{unitno} ']']];
         end
     end
 else
@@ -50,16 +50,16 @@ if zplot
                 for j = 1:numel(lay_requested)
                     if j == 1
                         zcolhead1 = {eqname{i}, eqname{i}, eqname{i}};
-                        zcolhead2 = {'Period [s]', [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', X [' unitstr{1} ']'], [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', Y [' unitstr{1} ']']};
+                        zcolhead2 = {'Period [s]', [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', X [' unitstr{unitno} ']'], [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', Y [' unitstr{unitno} ']']};
                     else
                         zcolhead1 = [zcolhead1, eqname{i}, eqname{i}, eqname{i}];
-                        zcolhead2 = [zcolhead2, 'Period [s]', [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', X [' unitstr{1} ']'], [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', Y [' unitstr{1} ']']];
+                        zcolhead2 = [zcolhead2, 'Period [s]', [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', X [' unitstr{unitno} ']'], [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', Y [' unitstr{unitno} ']']];
                     end
                 end
             else
                 for j = 1:numel(lay_requested)
                     zcolhead1 = [zcolhead1, eqname{i}, eqname{i}, eqname{i}];
-                    zcolhead2 = [zcolhead2, 'Period [s]', [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', X [' unitstr{1} ']'], [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', Y [' unitstr{1} ']']];
+                    zcolhead2 = [zcolhead2, 'Period [s]', [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', X [' unitstr{unitno} ']'], [NDAT{i,1}.SA_layno{lay_requested(j)} ' ' str ', Y [' unitstr{unitno} ']']];
                 end
             end
         end
